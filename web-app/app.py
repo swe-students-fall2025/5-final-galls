@@ -21,6 +21,10 @@ def login():
 def my_recipes():
     return render_template("my_recipes.html")
 
+@app.route("/my-pantry")
+def my_pantry():
+    return render_template("my_pantry.html")
+
 @app.route("/add-recipe")
 def add_recipe():
     return render_template("add_recipe.html")
