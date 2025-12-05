@@ -12,6 +12,17 @@ services:
       - mongodb
     environment:
       - MONGO_URI=mongodb://mongodb:27017
+  ml-recommender:
+    build:
+      context: ./ml-recommender
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./ml-recommender:/app
+    depends_on:
+      - mongodb
+    environment:
+      - MONGO_URI=mongodb://mongodb:27017
 
   mongodb:
     image: mongo
