@@ -24,6 +24,7 @@ def my_recipes():
 @app.route("/my-pantry")
 def my_pantry():
     return render_template("my_pantry.html")
+    
 
 @app.route("/add-recipe")
 def add_recipe():

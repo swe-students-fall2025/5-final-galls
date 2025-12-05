@@ -39,3 +39,68 @@ nav a {
     align-items: center;
 }
 
+.pantry-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 2rem 1rem 1rem;
+}
+
+.pantry-header-actions a {
+    margin-left: 0.5rem;
+}
+
+.pantry-table {
+    width: 95%;
+    margin: 0 auto 2rem;
+    border-collapse: collapse;
+}
+
+.pantry-table th,
+.pantry-table td {
+    padding: 0.75rem 0.5rem;
+    border-bottom: 1px solid #ddd;
+    text-align: left;
+}
+
+.pantry-table th {
+    background-color: #f5f5f5;
+}
+
+.actions-col {
+    white-space: nowrap;
+}
+
+.btn {
+    display: inline-block;
+    padding: 0.4rem 0.75rem;
+    border-radius: 4px;
+    border: none;
+    text-decoration: none;
+    font-size: 0.9rem;
+    cursor: pointer;
+}
+
+.btn-primary {
+    background-color: var(--primary-color);
+    color: #fff;
+}
+
+.btn-secondary {
+    background-color: #eee;
+    color: #333;
+}
+
+.btn-small {
+    font-size: 0.8rem;
+    margin-right: 0.25rem;
+}
+
+.btn-danger {
+    background-color: #c0392b;
+    color: #fff;
+}
+
+.empty-state {
+    margin: 2rem 1rem;
+}
