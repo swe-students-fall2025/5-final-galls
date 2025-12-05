@@ -11,7 +11,8 @@ db = client["ingredients"]
 @app.route("/")
 def index():
     ingredients = db.ingredients.find()
-    return render_template("index.html", ingredients=ingredients)
+    return render_template("home.html")
+    # return render_template("home.html", ingredients=ingredients)
 
 @app.route("/login")
 def login():
