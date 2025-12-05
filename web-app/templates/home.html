@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="page-header">
+    <h1>Recommended Recipes</h1>
+</div>
+
+<div class="pantry-preview">
+    <h3>My Pantry Preview</h3>
+
+    <div class="pantry-preview-ingredients">
+        {% if ingredients %}
+            <p>Ingredients here</p>
+        {% else %}
+            <p>You don't have any ingredients saved yet. Go to My Pantry to start adding!</p>
+        {% endif %}
+    </div>
+    
+</div>
+
+{% endblock %}
