@@ -10,7 +10,24 @@
 
     <div class="pantry-preview-ingredients">
         {% if ingredients %}
-            <p>Ingredients here</p>
+            <table class="pantry-preview-table">
+                <thead>
+                    <tr>
+                        <th>Ingredient</th>
+                        <th>Quantity</th>
+                        <th>Notes</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for ingredient in ingredients %}
+                    <tr>
+                        <td>{{ ingredient.name }}</td>
+                        <td>{{ ingredient.quantity if ingredient.quantity else '-' }}</td>
+                        <td>{{ ingredient.notes if ingredient.notes else '-' }}</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
         {% else %}
             <p>You don't have any ingredients saved yet. Go to My Pantry to start adding!</p>
         {% endif %}

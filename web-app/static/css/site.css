@@ -133,3 +133,20 @@ nav a {
     text-align: center;
     color: white;
 }
+
+.pantry-preview-table {
+    width: 95%;
+    margin: 0 auto 2rem;
+    border-collapse: collapse;
+}
+
+.pantry-preview-table th,
+.pantry-preview-table td {
+    padding: 0.75rem 0.5rem;
+    border-bottom: 1px solid #ddd;
+    text-align: left;
+}
+
+.pantry-preview-table th {
+    /* background-color: #f5f5f5; */
+}
