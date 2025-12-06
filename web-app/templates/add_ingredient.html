@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="form-wrapper">
+  <h1>Add Ingredient</h1>
+  <form action="{{ url_for('add_ingredient') }}" method="post" class="pantry-form">
+    <label>
+      Ingredient Name
+      <input type="text" name="name" required>
+    </label>
+
+    <label>
+      Quantity
+      <input type="text" name="quantity" placeholder="e.g. 2, 500g, 1 bag">
+    </label>
+
+    <label>
+      Notes
+      <textarea name="notes" rows="3" placeholder="Optional notes (brand, type, etc.)"></textarea>
+    </label>
+
+    <div class="form-actions">
+      <a href="{{ url_for('my_pantry') }}" class="btn btn-secondary">Cancel</a>
+      <button type="submit" class="btn btn-primary">Save Ingredient</button>
+    </div>
+  </form>
+</div>
+{% endblock %}

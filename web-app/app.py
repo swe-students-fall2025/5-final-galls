@@ -1,4 +1,4 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, request, redirect, url_for
 from pymongo import MongoClient
 from dotenv import load_dotenv
 import os
@@ -39,7 +39,18 @@ def my_recipes():
 
 @app.route("/my-pantry")
 def my_pantry():
-    return render_template("my_pantry.html", ingredients=mockIngredients)
+    return render_template("my_pantry.html")
+    
+@app.route("/my-pantry/add", methods=["GET", "POST"])
+def add_ingredient():
+    if request.method == "POST":
+        return redirect(url_for("my_pantry"))
+
+    return render_template("add_ingredient.html")
+
+@app.route("/my-pantry/<ingredient_id>/delete", methods=["POST"])
+def delete_ingredient(ingredient_id):
+    return redirect(url_for("my_pantry"))
 
 @app.route("/add-recipe")
 def add_recipe():
