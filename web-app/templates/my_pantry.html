@@ -22,8 +22,8 @@
     {% for ingredient in ingredients %}
     <tr>
       <td>{{ ingredient.name }}</td>
-      <td>{{ ingredient.quantity or '-' }}</td>
-      <td>{{ ingredient.notes or '' }}</td>
+      <td>{{ ingredient.quantity if ingredient.quantity else '-' }}</td>
+      <td>{{ ingredient.notes if ingredient.notes else '-' }}</td>
       <td class="actions-col">
         <a href="{{ url_for('edit_ingredient', ingredient_id=ingredient._id) }}" class="btn btn-small">
           Edit

@@ -112,6 +112,9 @@ nav a {
     margin: 2rem 1rem;
 }
 
+
+/*----HOME PAGE STYLING----*/
+
 .pantry-preview { 
     background-color: var(--primary-color);
     color: var(--secondary-color);
@@ -132,4 +135,49 @@ nav a {
 .pantry-preview-ingredients { 
     text-align: center;
     color: white;
+}
+
+.pantry-preview-table {
+    width: 95%;
+    margin: 0 auto 2rem;
+    border-collapse: collapse;
+}
+
+.pantry-preview-table th {
+    color: var(--secondary-color);
+}
+
+.pantry-preview-table th,
+.pantry-preview-table td {
+    padding: 0.75rem 0.5rem;
+    border-bottom: 1px solid #ddd;
+    text-align: left;
+}
+
+
+@media (max-width: 1300px) { 
+    .pantry-preview-table,
+    .pantry-preview-table thead,
+    .pantry-preview-table tbody,
+    .pantry-preview-table th, 
+    .pantry-preview-table td,
+    .pantry-preview-table tr { 
+        display: block;
+    }
+
+    .pantry-preview-table thead { 
+        display: none;
+    }
+
+    .pantry-preview-table tr { 
+        margin-bottom: 1rem; 
+        background: var(--tertiary-color);
+        padding: 1rem;
+        border-radius: 8px;
+    }
+
+    .pantry-preview-table td { 
+        position: relative;
+        /* border: none; */
+    }
 }
