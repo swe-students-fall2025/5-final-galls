@@ -24,7 +24,7 @@ jobs:
                 cd web-app
                 ls 
                 cat Pipfile
-                pipenv install --dev
+                pipenv install --dev --skip-lock
                 echo pipenv
                 pipenv run pip list
                 echo system 
