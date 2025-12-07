@@ -13,7 +13,7 @@ app.secret_key = 't3@m5g@lsp@ssw0rd'
 bcrypt = Bcrypt(app)
 
 MONGO_URI = os.getenv("MONGO_URI", "mongodb://mongodb:27017")
-DB_NAME = os.getenv("DB_NAME")
+DB_NAME = os.getenv("DB_NAME", "ingredients")
 
 client = MongoClient(MONGO_URI)
 db = client[DB_NAME]
