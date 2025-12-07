@@ -21,7 +21,7 @@
                 <tbody>
                 {% for ingredient in ingredients %}
                     <tr>
-                        <td>{{ ingredient.name }}</td>
+                        <td><strong>{{ ingredient.name }}</strong></td>
                         <td>{{ ingredient.quantity if ingredient.quantity else '-' }}</td>
                         <td>{{ ingredient.notes if ingredient.notes else '-' }}</td>
                     </tr>
