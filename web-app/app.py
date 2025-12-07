@@ -48,6 +48,13 @@ def add_ingredient():
 
     return render_template("add_ingredient.html")
 
+@app.route("/my-pantry/<ingredient_id>/edit", methods=["GET", "POST"])
+def edit_ingredient(ingredient_id):
+    if request.method == "POST":
+        return redirect(url_for("my_pantry"))
+
+    return render_template("edit_ingredient.html")
+
 @app.route("/my-pantry/<ingredient_id>/delete", methods=["POST"])
 def delete_ingredient(ingredient_id):
     return redirect(url_for("my_pantry"))

@@ -1,36 +1,37 @@
 {% extends "base.html" %}
 {% block content %}
 <div class="page-header">
-  <h1>Add Ingredient</h1>
+  <h1>Edit Ingredient</h1>
   <a href="{{ url_for('my_pantry') }}" class="btn btn-secondary header-link">← Back to Pantry</a>
 </div>
 
 <div class="pantry-form-card">
-  <form action="{{ url_for('add_ingredient') }}" method="post" class="pantry-form">
+  <form action="{{ url_for('edit_ingredient', ingredient_id=ingredient._id) }}" method="post" class="pantry-form">
+
     <div class="field-group">
       <h2 class="field-title">Basic Info</h2>
-      <p class="field-description">Give your ingredient a clear, simple name.</p>
+      <p class="field-description">Update the name of this ingredient if needed.</p>
       <label class="field-label" for="name">Ingredient Name</label>
-      <input id="name" type="text" name="name" required placeholder="e.g. Chicken breast, Olive oil">
+      <input id="name" type="text" name="name" value="{{ ingredient.name }}" required>
     </div>
 
     <div class="field-group">
       <h2 class="field-title">Quantity</h2>
-      <p class="field-description">How much of this ingredient do you currently have?</p>
+      <p class="field-description">Adjust how much you currently have.</p>
       <label class="field-label" for="quantity">Quantity</label>
-      <input id="quantity" type="text" name="quantity" placeholder="e.g. 2, 500g, 1 bag">
+      <input id="quantity" type="text" name="quantity" value="{{ ingredient.quantity or '' }}">
     </div>
 
     <div class="field-group">
       <h2 class="field-title">Extra Details</h2>
-      <p class="field-description">Optional notes like brand, type, or anything your recipes should know.</p>
+      <p class="field-description">Add or change any notes about this ingredient.</p>
       <label class="field-label" for="notes">Notes</label>
-      <textarea id="notes" name="notes" rows="3" placeholder="e.g. Unsalted, low-sodium, gluten-free, etc."></textarea>
+      <textarea id="notes" name="notes" rows="3">{{ ingredient.notes or '' }}</textarea>
     </div>
 
     <div class="form-actions">
       <a href="{{ url_for('my_pantry') }}" class="btn btn-secondary">Cancel</a>
-      <button type="submit" class="btn btn-primary">Save Ingredient</button>
+      <button type="submit" class="btn btn-primary">Update Ingredient</button>
     </div>
   </form>
 </div>
