@@ -1,17 +1,31 @@
 from flask import Flask, render_template, request, redirect, url_for
 from pymongo import MongoClient
+from dotenv import load_dotenv
 import os
 from flask_login import LoginManager, login_user, logout_user, login_required, current_user, UserMixin
 from bson.objectid import ObjectId
 from flask_bcrypt import Bcrypt
+
+load_dotenv()
 
 app = Flask(__name__)
 app.secret_key = 't3@m5g@lsp@ssw0rd'
 bcrypt = Bcrypt(app)
 
 MONGO_URI = os.getenv("MONGO_URI", "mongodb://mongodb:27017")
+DB_NAME = os.getenv("DB_NAME")
+
 client = MongoClient(MONGO_URI)
-db = client["ingredients"]
+db = client[DB_NAME]
+
+ingredients = db["ingredients"]
+users = db["users"]
+
+mockIngredients = [
+    {"name": "Flour", "quantity": "1 lb", "notes": "half empty"},
+    {"name": "Sugar", "quantity": "1/2 lb", "notes": ""},
+    {"name": "Salt", "quantity": "1 oz", "notes": "full"},
+]
 
 class User(UserMixin):
     def __init__(self, user_doc):
@@ -33,8 +47,11 @@ def load_user(user_id):
 @login_required
 def index():
     ingredients = db.ingredients.find()
-    return render_template("home.html", user=current_user)
+    return render_template("home.html", user=current_user,ingredients=mockIngredients)
     # return render_template("home.html", ingredients=ingredients)
+    # ingredients = db.ingredients.find()
+    # return render_template("home.html")
+
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
@@ -107,6 +124,13 @@ def add_ingredient():
         return redirect(url_for("my_pantry"))
 
     return render_template("add_ingredient.html")
+
+@app.route("/my-pantry/<ingredient_id>/edit", methods=["GET", "POST"])
+def edit_ingredient(ingredient_id):
+    if request.method == "POST":
+        return redirect(url_for("my_pantry"))
+
+    return render_template("edit_ingredient.html")
 
 @app.route("/my-pantry/<ingredient_id>/delete", methods=["POST"])
 @login_required
