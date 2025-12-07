@@ -14,7 +14,7 @@ jobs:
             - name: Set up Python
               uses: actions/setup-python@v5
               with: 
-                python-version: '3.12'
+                python-version: '3.8'
 
             - name: Install pipenv
               run: pip install pipenv
@@ -22,7 +22,7 @@ jobs:
             - name: Install dependencies via Pipenv
               run: |
                 cd web-app
-                pipenv install --dev --system --python 3.12
+                pipenv install --dev --system 
                 
             - name: Run tests
               working-directory: web-app
