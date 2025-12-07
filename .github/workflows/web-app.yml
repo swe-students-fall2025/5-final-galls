@@ -23,10 +23,12 @@ jobs:
               run: |
                 cd web-app
                 pipenv install --dev --system 
+                pipenv run pip list
                 
             - name: Run tests
               working-directory: web-app
-              run: pipenv run pytest
+              run: |
+                pipenv run pytest
               
     build-and-push:
         runs-on: ubuntu-latest
