@@ -22,7 +22,7 @@ jobs:
             - name: Install dependencies via Pipenv
               run: |
                 cd web-app
-                pipenv install --dev --system
+                pipenv install --dev --system --python 3.12
                 
             - name: Run tests
               working-directory: web-app
