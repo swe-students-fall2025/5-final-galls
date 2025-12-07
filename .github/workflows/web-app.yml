@@ -22,11 +22,11 @@ jobs:
             - name: Install dependencies via Pipenv
               run: |
                 cd web-app
-                pipenv install --system
+                pipenv install --dev --system
                 
             - name: Run tests
               working-directory: web-app
-              run: pytest
+              run: pipenv run pytest
               
     build-and-push:
         runs-on: ubuntu-latest
