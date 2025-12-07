@@ -22,8 +22,12 @@ jobs:
             - name: Install dependencies via Pipenv
               run: |
                 cd web-app
+                ls 
+                cat Pipfile
                 pipenv install --dev --system 
                 pipenv run pip list
+                echo system 
+                pip list 
                 
             - name: Run tests
               working-directory: web-app
