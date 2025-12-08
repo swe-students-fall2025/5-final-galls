@@ -22,8 +22,12 @@ jobs:
             - name: Install dependencies via Pipenv
               run: |
                 cd web-app
+                echo ls
                 ls 
+                echo pipfile
                 cat Pipfile
+                echo pipfile.lock
+                cat Pipfile.lock
                 pipenv install --dev --skip-lock
                 echo pipenv
                 pipenv run pip list
