@@ -14,7 +14,7 @@ class RecommendationRequest(BaseModel):
     top_n: int = 5
     dietary: Optional[List[str]] = None
 
-@app.post("/recommend")
+@app.post("/recommendations")
 def recommend(request: RecommendationRequest):
     # Preprocess ingredients
     pantry = normalize_ingredients(request.ingredients)

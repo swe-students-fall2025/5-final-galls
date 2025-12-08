@@ -1,4 +1,5 @@
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template, request, redirect, url_for, jsonify
+import requests
 from pymongo import MongoClient
 from dotenv import load_dotenv
 import os
@@ -142,6 +143,34 @@ def delete_ingredient(ingredient_id):
 def add_recipe():
     return render_template("add_recipe.html")
 
+SUGGESTION_API_URL = os.getenv("ML_RECOMMENDER_URL", "http:/localhost:8000/recommendations")
+
+@app.route("/recommendations", methods=["POST"])
+@login_required
+def recommend_recipes():
+    # Get pantry ingredients from your DB
+    user_ingredients = list(db.ingredients.find({"user_id": current_user.id}))
+    ingredient_names = [i["name"] for i in user_ingredients]
+
+    # Optional: get dietary preferences from frontend form
+    dietary = request.form.getlist("dietary")
+
+    payload = {
+        "ingredients": ingredient_names,
+        "top_n": 5,
+        "dietary": dietary
+    }
+
+    try:
+        response = requests.post(SUGGESTION_API_URL, json=payload)
+        response.raise_for_status()
+        recipes = response.json()
+    except Exception as e:
+        print("Error calling ML Recommender:", e)
+        recipes = []
+
+    # Pass recipes to a template for display
+    return render_template("recommendations.html", recipes=recipes)
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000)
