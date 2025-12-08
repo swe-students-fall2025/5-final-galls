@@ -28,7 +28,7 @@ jobs:
                 cat Pipfile
                 echo pipfile.lock
                 cat Pipfile.lock
-                pipenv install --dev --skip-lock
+                pipenv install --dev
                 echo pipenv
                 pipenv run pip list
                 echo system 
