@@ -1,4 +1,5 @@
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template, request, redirect, url_for, jsonify
+import requests
 from pymongo import MongoClient
 from dotenv import load_dotenv
 import os
@@ -20,12 +21,13 @@ db = client[DB_NAME]
 
 ingredients = db["ingredients"]
 users = db["users"]
-
+'''
 mockIngredients = [
     {"name": "Flour", "quantity": "1 lb", "notes": "half empty"},
     {"name": "Sugar", "quantity": "1/2 lb", "notes": ""},
     {"name": "Salt", "quantity": "1 oz", "notes": "full"},
 ]
+'''
 
 class User(UserMixin):
     def __init__(self, user_doc):
@@ -46,9 +48,8 @@ def load_user(user_id):
 @app.route("/")
 @login_required
 def index():
-    ingredients = db.ingredients.find()
-    return render_template("home.html", user=current_user,ingredients=mockIngredients)
-    # return render_template("home.html", ingredients=ingredients)
+    user_ingredients = list(db.ingredients.find({"user_id": ObjectId(current_user.id)}))
+    return render_template("home.html", user=current_user,ingredients=user_ingredients)
     # ingredients = db.ingredients.find()
     # return render_template("home.html")
 
@@ -115,17 +116,32 @@ def my_recipes():
 @app.route("/my-pantry")
 @login_required
 def my_pantry():
-    return render_template("my_pantry.html")
-    
+    user_ingredients = list(db.ingredients.find({"user_id": ObjectId(current_user.id)}))
+    ingredient_names = [i["name"] for i in user_ingredients]
+    return render_template("my_pantry.html", ingredients=user_ingredients, ingredient_names=ingredient_names, suggestion_api_url=SUGGESTION_API_URL)
+
 @app.route("/my-pantry/add", methods=["GET", "POST"])
 @login_required
 def add_ingredient():
     if request.method == "POST":
+        name = request.form ["name"]
+        quantity = request.form["quantity"]
+        notes = request.form["notes"]
+
+        # save to db
+        db.ingredients.insert_one({
+            "user_id": ObjectId(current_user.id),
+            "name": name,
+            "quantity": quantity,
+            "notes": notes
+        })
+
         return redirect(url_for("my_pantry"))
 
     return render_template("add_ingredient.html")
 
 @app.route("/my-pantry/<ingredient_id>/edit", methods=["GET", "POST"])
+@login_required
 def edit_ingredient(ingredient_id):
     if request.method == "POST":
         return redirect(url_for("my_pantry"))
@@ -135,6 +151,7 @@ def edit_ingredient(ingredient_id):
 @app.route("/my-pantry/<ingredient_id>/delete", methods=["POST"])
 @login_required
 def delete_ingredient(ingredient_id):
+    db.ingredients.delete_one({"_id": ObjectId(ingredient_id), "user_id": ObjectId(current_user.id)})
     return redirect(url_for("my_pantry"))
 
 @app.route("/add-recipe")
@@ -142,6 +159,33 @@ def delete_ingredient(ingredient_id):
 def add_recipe():
     return render_template("add_recipe.html")
 
+SUGGESTION_API_URL = "http://localhost:8000/recommendations"
+
+@app.route("/recommendations", methods=["POST"])
+@login_required
+def recommend_recipes():
+    # Get pantry ingredients from your DB
+    user_ingredients = list(db.ingredients.find({"user_id": ObjectId(current_user.id)}))
+    ingredient_names = [i["name"] for i in user_ingredients]
+
+    # Optional: get dietary preferences from frontend form
+    dietary = request.form.getlist("dietary")
+
+    payload = {
+        "ingredients": ingredient_names,
+        "top_n": 5,
+        "dietary": dietary
+    }
+
+    try:
+        response = requests.post(SUGGESTION_API_URL, json=payload)
+        response.raise_for_status()
+        recipes = response.json()
+    except Exception as e:
+        print("Error calling ML Recommender:", e)
+        recipes = []
+
+    return jsonify(recipes)
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=5000)
+    app.run(host="0.0.0.0", port=5001)

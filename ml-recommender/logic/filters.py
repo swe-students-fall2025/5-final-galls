@@ -1,4 +1,4 @@
-from utils import get_ingredients
+from logic.ingredients import get_ingredients
 
 def filter_recipes(recipes, user_restrictions):
 

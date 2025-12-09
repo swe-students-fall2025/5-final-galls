@@ -4,7 +4,7 @@ services:
     build:
       context: ./web-app
     ports:
-      - "5000:5000"
+      - "5001:5001"
     volumes:
       - ./web-app:/app
     depends_on:
@@ -25,6 +25,7 @@ services:
 
   mongodb:
     image: mongo
+    command: ["--noauth"] # for dev
     ports:
       - "27017:27017"
 
