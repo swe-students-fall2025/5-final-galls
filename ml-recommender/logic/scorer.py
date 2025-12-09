@@ -1,4 +1,4 @@
-from utils import get_ingredients
+from logic.ingredients import get_ingredients
 
 def rank_recipes(recipes, pantry_items):
     pantry_items = [item.lower().strip() for item in pantry_items]
