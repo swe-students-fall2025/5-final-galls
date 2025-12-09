@@ -48,7 +48,7 @@ def load_user(user_id):
 @app.route("/")
 @login_required
 def index():
-    user_ingredients = list(db.ingredients.find({"user_id": current_user.id}))
+    user_ingredients = list(db.ingredients.find({"user_id": ObjectId(current_user.id)}))
     return render_template("home.html", user=current_user,ingredients=user_ingredients)
     # ingredients = db.ingredients.find()
     # return render_template("home.html")
@@ -116,7 +116,7 @@ def my_recipes():
 @app.route("/my-pantry")
 @login_required
 def my_pantry():
-    user_ingredients = list(db.ingredients.find({"user_id": current_user.id}))
+    user_ingredients = list(db.ingredients.find({"user_id": ObjectId(current_user.id)}))
     ingredient_names = [i["name"] for i in user_ingredients]
     return render_template("my_pantry.html", ingredients=user_ingredients, ingredient_names=ingredient_names, suggestion_api_url=SUGGESTION_API_URL)
 
@@ -130,7 +130,7 @@ def add_ingredient():
 
         # save to db
         db.ingredients.insert_one({
-            "user_id": current_user.id,
+            "user_id": ObjectId(current_user.id),
             "name": name,
             "quantity": quantity,
             "notes": notes
@@ -151,7 +151,7 @@ def edit_ingredient(ingredient_id):
 @app.route("/my-pantry/<ingredient_id>/delete", methods=["POST"])
 @login_required
 def delete_ingredient(ingredient_id):
-    db.ingredients.delete_one({"_id": ObjectId(ingredient_id), "user_id": current_user.id})
+    db.ingredients.delete_one({"_id": ObjectId(ingredient_id), "user_id": ObjectId(current_user.id)})
     return redirect(url_for("my_pantry"))
 
 @app.route("/add-recipe")
@@ -159,13 +159,13 @@ def delete_ingredient(ingredient_id):
 def add_recipe():
     return render_template("add_recipe.html")
 
-SUGGESTION_API_URL = "http://ml-recommender:8000/recommendations"
+SUGGESTION_API_URL = "http://localhost:8000/recommendations"
 
 @app.route("/recommendations", methods=["POST"])
 @login_required
 def recommend_recipes():
     # Get pantry ingredients from your DB
-    user_ingredients = list(db.ingredients.find({"user_id": current_user.id}))
+    user_ingredients = list(db.ingredients.find({"user_id": ObjectId(current_user.id)}))
     ingredient_names = [i["name"] for i in user_ingredients]
 
     # Optional: get dietary preferences from frontend form

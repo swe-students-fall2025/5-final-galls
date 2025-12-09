@@ -43,7 +43,7 @@ def recommend(request: RecommendationRequest):
     # TODO: caching
 
     # Fetch recipes from Spoonacular
-    recipes = get_recipes_by_ingredients(pantry, number=request.top_n * 5)
+    recipes = get_recipes_by_ingredients(pantry, request.top_n * 5, request.dietary)
 
     restrictions = validate_restrictions({
         "diet": request.dietary,
@@ -56,16 +56,18 @@ def recommend(request: RecommendationRequest):
     ranked_recipes = rank_recipes(filtered_recipes, pantry)
 
     # Simplify results for the frontend
-    simplified = [
-        {
-            "name": r.get("name"),
-            "matched_ingredients": r.get("usedIngredientCount", 0),
-            "missing_ingredients": [i.get("name") for i in r.get("missedIngredients", [])],
+    simplified = []
+    for r in recipes:
+        used = [i["name"] for i in r.get("usedIngredients") or []]
+        missed = [i["name"] for i in r.get("missedIngredients") or []]
+
+        simplified.append({
+            "name": r.get("title"),
+            "matched_ingredients": len(used),
+            "missing_ingredients": missed,
             "image": r.get("image"),
-            "dietary_tags": r.get("recipe", {}).get("diets", []),
-        }
-        for r in ranked_recipes[:request.top_n]
-    ]
+            "dietary_tags": r.get("diets", [])
+        })
 
     # Cache and return
     # TODO: caching

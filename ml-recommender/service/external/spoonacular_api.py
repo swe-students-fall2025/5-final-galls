@@ -1,72 +1,58 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 from typing import List, Optional
 import requests
 import os
 
 API_KEY = os.getenv("SPOONACULAR_API_KEY", "395ad339be8b4de3bb48c175e8c890c4")
-FIND_BY_INGREDIENTS_URL = "https://api.spoonacular.com/recipes/findByIngredients"
+if not API_KEY:
+    raise ValueError("SPOONACULAR_API_KEY is not set in environment variables")
+
 COMPLEX_SEARCH_URL = "https://api.spoonacular.com/recipes/complexSearch"
 
 app = FastAPI()
-# -------- Request Model -------
+
 class RecommendationRequest(BaseModel):
     ingredients: List[str]
     top_n: int = 5
-    dietary: Optional[List[str]] = None
+    dietary: Optional[List[str]] = None  # optional dietary filter
 
-# ------- Helper Functions -------
-def get_recipes_by_ingredients(pantry: List[str], number: int = 10, dietary: List[str] = None) -> List[dict]:
-    # find receipes with used/missed ingredients
+def get_recipes_by_ingredients(ingredients: List[str], top_n: int, dietary: Optional[List[str]] = None):
+    """Call Spoonacular API and return recipes based on ingredients and dietary filters."""
     params = {
         "apiKey": API_KEY,
-        "ingredients": ",".join(pantry),
-        "number": number,
-        "ranking": 1,
-        "ignorePantry": False
+        "includeIngredients": ",".join(ingredients),
+        "number": top_n,
+        "sort": "max-used-ingredients",
+        "fillIngredients": "true",
+        "addRecipeInformation": "true"
     }
-    resp = requests.get(FIND_BY_INGREDIENTS_URL, params=params)
-    resp.raise_for_status()
-    return resp.json()
 
-def filter_recipes_by_diet(recipes: List[dict], dietary: List[str]):
-    if not dietary:
-        return recipes
+    if dietary:
+        params["diet"] = ",".join(dietary)
 
-    diet_query = ",".join(dietary)
-    params = {
-        "apiKey": API_KEY,
-        "diet": diet_query,
-        "number": 100  # get enough recipes for filtering
-    }
-    resp = requests.get(COMPLEX_SEARCH_URL, params=params)
-    resp.raise_for_status()
-    valid_ids = {r["id"] for r in resp.json().get("results", [])}
+    try:
+        resp = requests.get(COMPLEX_SEARCH_URL, params=params)
+        resp.raise_for_status()
+        return resp.json().get("results", [])
+    except requests.RequestException as e:
+        raise HTTPException(status_code=500, detail=f"Error fetching recipes: {e}")
 
-    # Keep only recipes that match dietary tags
-    return [r for r in recipes if r["id"] in valid_ids]
-
-# ------- API Endpoint -------
 @app.post("/recommendations")
 def recommend(request: RecommendationRequest):
-    # Step 1: Get recipes by ingredients
-    recipes = get_recipes_by_ingredients(request.ingredients, number=request.top_n * 5)
+    recipes = get_recipes_by_ingredients(request.ingredients, request.top_n, request.dietary)
 
-    # Step 2: Filter by dietary tags if provided
-    recipes_filtered = filter_recipes_by_diet(recipes, request.dietary)
+    simplified = []
+    for r in recipes:
+        used = [i["name"] for i in r.get("usedIngredients", [])]
+        missed = [i["name"] for i in r.get("missedIngredients", [])]
 
-    # Step 3: Sort by matched ingredient count
-    recipes_sorted = sorted(recipes_filtered, key=lambda r: r["usedIngredientCount"], reverse=True)
-
-    # Step 4: Return top N recipes
-    results = []
-    for r in recipes_sorted[:request.top_n]:
-        results.append({
-            "name": r["title"],
-            "matched_ingredients": r["usedIngredientCount"],
-            "missing_ingredients": [i["name"] for i in r.get("missedIngredients", [])],
+        simplified.append({
+            "name": r.get("title"),
+            "matched_ingredients": len(used),  # counting all used ingredients
+            "missing_ingredients": missed,
             "image": r.get("image"),
-            "dietary_tags": request.dietary or []
+            "dietary_tags": r.get("diets", [])
         })
 
-    return results
+    return simplified
