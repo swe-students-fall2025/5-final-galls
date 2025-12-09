@@ -119,7 +119,7 @@ def my_pantry():
     user_ingredients = list(db.ingredients.find({"user_id": current_user.id}))
     ingredient_names = [i["name"] for i in user_ingredients]
     return render_template("my_pantry.html", ingredients=user_ingredients, ingredient_names=ingredient_names, suggestion_api_url=SUGGESTION_API_URL)
-    
+
 @app.route("/my-pantry/add", methods=["GET", "POST"])
 @login_required
 def add_ingredient():

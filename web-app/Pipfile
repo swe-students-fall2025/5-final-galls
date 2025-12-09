@@ -9,6 +9,7 @@ flask-bcrypt = "*"
 flask = "*"
 dotenv = "*"
 flask-login = "*"
+requests = "*"
 
 [dev-packages]
 pytest = "*"
