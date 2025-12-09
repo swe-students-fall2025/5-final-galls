@@ -124,11 +124,24 @@ def my_pantry():
 @login_required
 def add_ingredient():
     if request.method == "POST":
+        name = request.form ["name"]
+        quantity = request.form["quantity"]
+        notes = request.form["notes"]
+
+        # save to db
+        db.ingredients.insert_one({
+            "user_id": current_user.id,
+            "name": name,
+            "quantity": quantity,
+            "notes": notes
+        })
+
         return redirect(url_for("my_pantry"))
 
     return render_template("add_ingredient.html")
 
 @app.route("/my-pantry/<ingredient_id>/edit", methods=["GET", "POST"])
+@login_required
 def edit_ingredient(ingredient_id):
     if request.method == "POST":
         return redirect(url_for("my_pantry"))
@@ -138,6 +151,7 @@ def edit_ingredient(ingredient_id):
 @app.route("/my-pantry/<ingredient_id>/delete", methods=["POST"])
 @login_required
 def delete_ingredient(ingredient_id):
+    db.ingredients.delete_one({"_id": ObjectId(ingredient_id), "user_id": current_user.id})
     return redirect(url_for("my_pantry"))
 
 @app.route("/add-recipe")
@@ -145,7 +159,7 @@ def delete_ingredient(ingredient_id):
 def add_recipe():
     return render_template("add_recipe.html")
 
-SUGGESTION_API_URL = os.getenv("ML_RECOMMENDER_URL", "http://localhost:8000/recommendations")
+SUGGESTION_API_URL = "http://ml-recommender:8000/recommendations"
 
 @app.route("/recommendations", methods=["POST"])
 @login_required
@@ -171,8 +185,7 @@ def recommend_recipes():
         print("Error calling ML Recommender:", e)
         recipes = []
 
-    # Pass recipes to a template for display
-    return render_template("recommendations.html", recipes=recipes)
+    return jsonify(recipes)
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5001)

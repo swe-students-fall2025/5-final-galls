@@ -1,4 +1,5 @@
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from typing import List, Optional
 
@@ -12,6 +13,20 @@ from logic.ingredients import get_ingredients
 # TODO: import caching
 
 app = FastAPI()
+
+origins = [
+    "http://localhost:5001",
+    "http://127.0.0.1:5001",
+    "*",
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 class RecommendationRequest(BaseModel):
     ingredients: List[str]
@@ -43,11 +58,11 @@ def recommend(request: RecommendationRequest):
     # Simplify results for the frontend
     simplified = [
         {
-            "name": r["title"],
+            "name": r.get("name"),
             "matched_ingredients": r.get("usedIngredientCount", 0),
-            "missing_ingredients": [i["name"] for i in r.get("missedIngredients", [])],
+            "missing_ingredients": [i.get("name") for i in r.get("missedIngredients", [])],
             "image": r.get("image"),
-            "dietary_tags": r["recipe"].get("diets", []),
+            "dietary_tags": r.get("recipe", {}).get("diets", []),
         }
         for r in ranked_recipes[:request.top_n]
     ]

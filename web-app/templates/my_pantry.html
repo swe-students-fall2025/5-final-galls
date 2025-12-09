@@ -47,7 +47,7 @@
   <button id = "get-recommendations-btn" class="btn btn-success">
     Get Recommendations
   </button>
-  <div id = "recommendations-result"></div>
+  <div id = "recommendation-results"></div>
 </div>
 <script>
   // Prepare ingredient names from Flask
@@ -62,7 +62,7 @@
     };
 
     try {
-      const response = await fetch('http://localhost:8000/recommendations', {  // FastAPI URL
+      const response = await fetch(suggestionUrl, {  // FastAPI URL
         method: 'POST',
         headers: {'Content-Type': 'application/json'},
         body: JSON.stringify(payload)
