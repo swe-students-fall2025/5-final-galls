@@ -1,7 +1,7 @@
-from typing import List, Dict, Any
+from utils import get_ingredients
 
-#takes a list of recipies and filters them based on the users dietary restrictions
-def filter_recipes(recipes: List[Dict[str, Any]], user_restrictions: Dict[str, Any]) -> List[Dict[str, Any]]:
+def filter_recipes(recipes, user_restrictions):
+
     filtered = recipes
     
     if user_restrictions.get('diet'):
@@ -16,8 +16,35 @@ def filter_recipes(recipes: List[Dict[str, Any]], user_restrictions: Dict[str, A
     return filtered
 
 
-# checks if the recipie has the ingredients the user is intolerant to
-def has_intolerance(recipe: Dict[str, Any], intolerances: List[str]) -> bool:
+def meets_diet(recipe, diet):
+    diets = [diet] if isinstance(diet, str) else diet
+    diets = [d.lower().strip() for d in diets]
+    
+    if not diets:
+        return True
+    
+    diet_fields = {
+        'vegetarian': recipe.get('vegetarian', False),
+        'vegan': recipe.get('vegan', False),
+        'gluten free': recipe.get('glutenFree', False),
+        'ketogenic': recipe.get('ketogenic', False),
+        'dairy free': recipe.get('dairyFree', False),
+        'paleo': recipe.get('paleo', False),
+        'pescatarian': recipe.get('pescatarian', False),
+        'primal': recipe.get('primal', False),
+        'whole30': recipe.get('whole30', False),
+        'low fodmap': recipe.get('lowFodmap', False),
+    }
+    
+    if 'diets' in recipe:
+        recipe_diets = [d.lower() for d in recipe['diets']]
+        if any(diet in recipe_diets for diet in diets):
+            return True
+    
+    return any(diet_fields.get(diet, False) for diet in diets)
+
+
+def has_intolerance(recipe, intolerances):
     ingredients = get_ingredients(recipe)
     intolerances = [i.lower().strip() for i in intolerances]
     
@@ -45,8 +72,8 @@ def has_intolerance(recipe: Dict[str, Any], intolerances: List[str]) -> bool:
     
     return False
 
-#if the user has specific ingredients they want to exclude
-def has_excluded(recipe: Dict[str, Any], excluded: List[str]) -> bool:
+
+def has_excluded(recipe, excluded):
     ingredients = get_ingredients(recipe)
     excluded = [e.lower().strip() for e in excluded]
     
@@ -56,30 +83,7 @@ def has_excluded(recipe: Dict[str, Any], excluded: List[str]) -> bool:
     
     return False
 
-
-#gets all the ingredients from the recipie
-def get_ingredients(recipe: Dict[str, Any]) -> List[str]:
-    ingredients = []
-    
-    if 'extendedIngredients' in recipe:
-        for ing in recipe['extendedIngredients']:
-            name = ing.get('name') or ing.get('originalName') or ing.get('original', '')
-            if name:
-                ingredients.append(name.lower())
-    
-    elif 'ingredients' in recipe:
-        for ing in recipe['ingredients']:
-            if isinstance(ing, str):
-                ingredients.append(ing.lower())
-            elif isinstance(ing, dict):
-                name = ing.get('name') or ing.get('originalName') or ing.get('original', '')
-                if name:
-                    ingredients.append(name.lower())
-    
-    return ingredients
-
-#clean format
-def validate_restrictions(restrictions: Dict[str, Any]) -> Dict[str, Any]:
+def validate_restrictions(restrictions):
     valid = {}
     
     valid_diets = [
