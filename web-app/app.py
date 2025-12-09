@@ -143,10 +143,20 @@ def add_ingredient():
 @app.route("/my-pantry/<ingredient_id>/edit", methods=["GET", "POST"])
 @login_required
 def edit_ingredient(ingredient_id):
+    ingredient = db.ingredients.find_one({"_id": ObjectId(ingredient_id),"user_id": ObjectId(current_user.id)})
+
+    if not ingredient:
+        return redirect(url_for("my_pantry"))
+    
     if request.method == "POST":
+        name = request.form.get("name", "").strip()
+        quantity = request.form.get("quantity", "").strip()
+        notes = request.form.get("notes", "").strip()
+
+        db.ingredients.update_one({"_id": ObjectId(ingredient_id), "user_id": ObjectId(current_user.id)}, {"$set": {"name": name, "quantity": quantity, "notes": notes}})
         return redirect(url_for("my_pantry"))
 
-    return render_template("edit_ingredient.html")
+    return render_template("edit_ingredient.html", ingredient=ingredient)
 
 @app.route("/my-pantry/<ingredient_id>/delete", methods=["POST"])
 @login_required

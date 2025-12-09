@@ -29,6 +29,7 @@
           Edit
         </a>
 
+
         <form action="{{ url_for('delete_ingredient', ingredient_id=ingredient._id) }}" method="post"
           style="display:inline;">
           <button type="submit" class="btn btn-small btn-danger">
@@ -42,12 +43,12 @@
 </table>
 
 <!-- Recommendation Button -->
-<div class = "recommendation-results">
+<div class="recommendation-results">
   <h3>Get Recipe Recommendations</h3>
-  <button id = "get-recommendations-btn" class="btn btn-success">
+  <button id="get-recommendations-btn" class="btn btn-success">
     Get Recommendations
   </button>
-  <div id = "recommendation-results"></div>
+  <div id="recommendation-results"></div>
 </div>
 <script>
   // Prepare ingredient names from Flask
@@ -65,7 +66,7 @@
     try {
       const response = await fetch(suggestionUrl, {  // FastAPI URL
         method: 'POST',
-        headers: {'Content-Type': 'application/json'},
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload)
       });
       const recipes = await response.json();
@@ -81,11 +82,11 @@
             <img src="${r.image}" alt="${r.name}" width="120">
             <p><strong>Matched ingredients:</strong> ${r.matched_ingredients}</p>
             <p><strong>Missing ingredients:</strong> ${r.missing_ingredients.length > 0
-                ? r.missing_ingredients.join(', ')
-                : 'None'}</p>
+            ? r.missing_ingredients.join(', ')
+            : 'None'}</p>
             ${r.dietary_tags.length > 0
-                ? `<p><strong>Dietary Tags:</strong> ${r.dietary_tags.join(', ')}</p>`
-                : ''}
+            ? `<p><strong>Dietary Tags:</strong> ${r.dietary_tags.join(', ')}</p>`
+            : ''}
           </div>
         `).join('');
       }
