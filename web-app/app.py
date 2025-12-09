@@ -21,12 +21,13 @@ db = client[DB_NAME]
 
 ingredients = db["ingredients"]
 users = db["users"]
-
+'''
 mockIngredients = [
     {"name": "Flour", "quantity": "1 lb", "notes": "half empty"},
     {"name": "Sugar", "quantity": "1/2 lb", "notes": ""},
     {"name": "Salt", "quantity": "1 oz", "notes": "full"},
 ]
+'''
 
 class User(UserMixin):
     def __init__(self, user_doc):
@@ -47,9 +48,8 @@ def load_user(user_id):
 @app.route("/")
 @login_required
 def index():
-    ingredients = db.ingredients.find()
-    return render_template("home.html", user=current_user,ingredients=mockIngredients)
-    # return render_template("home.html", ingredients=ingredients)
+    user_ingredients = list(db.ingredients.find({"user_id": current_user.id}))
+    return render_template("home.html", user=current_user,ingredients=user_ingredients)
     # ingredients = db.ingredients.find()
     # return render_template("home.html")
 
@@ -116,7 +116,9 @@ def my_recipes():
 @app.route("/my-pantry")
 @login_required
 def my_pantry():
-    return render_template("my_pantry.html")
+    user_ingredients = list(db.ingredients.find({"user_id": current_user.id}))
+    ingredient_names = [i["name"] for i in user_ingredients]
+    return render_template("my_pantry.html", ingredients=user_ingredients, ingredient_names=ingredient_names, suggestion_api_url=SUGGESTION_API_URL)
     
 @app.route("/my-pantry/add", methods=["GET", "POST"])
 @login_required
@@ -143,7 +145,7 @@ def delete_ingredient(ingredient_id):
 def add_recipe():
     return render_template("add_recipe.html")
 
-SUGGESTION_API_URL = os.getenv("ML_RECOMMENDER_URL", "http:/localhost:8000/recommendations")
+SUGGESTION_API_URL = os.getenv("ML_RECOMMENDER_URL", "http://localhost:8000/recommendations")
 
 @app.route("/recommendations", methods=["POST"])
 @login_required
@@ -173,4 +175,4 @@ def recommend_recipes():
     return render_template("recommendations.html", recipes=recipes)
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=5000)
+    app.run(host="0.0.0.0", port=5001)

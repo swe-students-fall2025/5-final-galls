@@ -40,6 +40,55 @@
     {% endfor %}
   </tbody>
 </table>
+
+<!-- Recommendation Button -->
+<div class = "recommendation-section">
+  <h3>Get Recipe Recommendations</h3>
+  <button id = "get-recommendations-btn" class="btn btn-success">
+    Get Recommendations
+  </button>
+  <div id = "recommendations-result"></div>
+</div>
+<script>
+  // Prepare ingredient names from Flask
+  const ingredientNames = JSON.parse('{{ ingredients | map(attribute="name") | list | tojson | safe }}');
+  const suggestionUrl = "{{ suggestion_api_url }}";
+
+  document.getElementById('get-recommendations-btn').addEventListener('click', async () => {
+    const payload = {
+      ingredients: ingredientNames,
+      top_n: 5,
+      dietary: []
+    };
+
+    try {
+      const response = await fetch('http://localhost:8000/recommendations', {  // FastAPI URL
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify(payload)
+      });
+      const recipes = await response.json();
+
+      // Render results
+      const container = document.getElementById('recommendation-results');
+      if (recipes.length === 0) {
+        container.innerHTML = "<p>No recipes found for your pantry.</p>";
+      } else {
+        container.innerHTML = recipes.map(r => `
+          <div class="recipe-card">
+            <h4>${r.name}</h4>
+            <img src="${r.image}" alt="${r.name}" width="100">
+            <p>Matched ingredients: ${r.matched_ingredients}</p>
+            <p>Missing ingredients: ${r.missing_ingredients.join(', ')}</p>
+          </div>
+        `).join('');
+      }
+    } catch (err) {
+      console.error("Error fetching recipes:", err);
+    }
+  });
+</script>
+<!-- Empty State -->
 {% else %}
 <p class="empty-state">
   You don't have any ingredients saved yet.
