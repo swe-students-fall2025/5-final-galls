@@ -4,7 +4,7 @@ from typing import List, Optional
 import requests
 import os
 
-API_KEY = os.getenv("SPOONACULAR_API_KEY", "395ad339be8b4de3bb48c175e8c890c4")
+API_KEY = os.getenv("SPOONACULAR_API_KEY", "a3c55e4adaa344ac88871c570742e2bd")
 if not API_KEY:
     raise ValueError("SPOONACULAR_API_KEY is not set in environment variables")
 

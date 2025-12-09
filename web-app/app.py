@@ -47,12 +47,17 @@ def load_user(user_id):
 
 @app.route("/")
 @login_required
-def index():
-    user_ingredients = list(db.ingredients.find({"user_id": ObjectId(current_user.id)}))
-    return render_template("home.html", user=current_user,ingredients=user_ingredients)
-    # ingredients = db.ingredients.find()
-    # return render_template("home.html")
+def home():
+    ingredients = list(db.ingredients.find({
+        "user_id": ObjectId(current_user.id)
+    }))
 
+    return render_template(
+        "home.html",
+        user=current_user,
+        ingredients=ingredients,
+        suggestion_api_url="http://localhost:8000/recommendations"
+    )
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
@@ -118,7 +123,7 @@ def my_recipes():
 def my_pantry():
     user_ingredients = list(db.ingredients.find({"user_id": ObjectId(current_user.id)}))
     ingredient_names = [i["name"] for i in user_ingredients]
-    return render_template("my_pantry.html", ingredients=user_ingredients, ingredient_names=ingredient_names, suggestion_api_url=SUGGESTION_API_URL)
+    return render_template("my_pantry.html", ingredients=user_ingredients, ingredient_names=ingredient_names)
 
 @app.route("/my-pantry/add", methods=["GET", "POST"])
 @login_required

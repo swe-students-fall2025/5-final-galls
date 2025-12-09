@@ -40,60 +40,6 @@
     {% endfor %}
   </tbody>
 </table>
-
-<!-- Recommendation Button -->
-<div class = "recommendation-results">
-  <h3>Get Recipe Recommendations</h3>
-  <button id = "get-recommendations-btn" class="btn btn-success">
-    Get Recommendations
-  </button>
-  <div id = "recommendation-results"></div>
-</div>
-<script>
-  // Prepare ingredient names from Flask
-  const ingredientNames = JSON.parse('{{ ingredients | map(attribute="name") | list | tojson | safe }}');
-  const suggestionUrl = "{{ suggestion_api_url }}";
-
-  document.getElementById('get-recommendations-btn').addEventListener('click', async () => {
-    console.log("Fetching from:", suggestionUrl);
-    const payload = {
-      ingredients: ingredientNames,
-      top_n: 5,
-      dietary: []
-    };
-
-    try {
-      const response = await fetch(suggestionUrl, {  // FastAPI URL
-        method: 'POST',
-        headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify(payload)
-      });
-      const recipes = await response.json();
-
-      // Render results
-      const container = document.getElementById('recommendation-results');
-      if (recipes.length === 0) {
-        container.innerHTML = "<p>No recipes found for your pantry.</p>";
-      } else {
-        container.innerHTML = recipes.map(r => `
-          <div class="recipe-card">
-            <h4>${r.name}</h4>
-            <img src="${r.image}" alt="${r.name}" width="120">
-            <p><strong>Matched ingredients:</strong> ${r.matched_ingredients}</p>
-            <p><strong>Missing ingredients:</strong> ${r.missing_ingredients.length > 0
-                ? r.missing_ingredients.join(', ')
-                : 'None'}</p>
-            ${r.dietary_tags.length > 0
-                ? `<p><strong>Dietary Tags:</strong> ${r.dietary_tags.join(', ')}</p>`
-                : ''}
-          </div>
-        `).join('');
-      }
-    } catch (err) {
-      console.error("Error fetching recipes:", err);
-    }
-  });
-</script>
 <!-- Empty State -->
 {% else %}
 <p class="empty-state">
