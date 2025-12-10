@@ -39,22 +39,22 @@ class RecommendationRequest(BaseModel):
 def recommend(request: RecommendationRequest):
     # Preprocess ingredients
     pantry = normalize_ingredients(request.ingredients)
-
+    print(1)
     # TODO: caching
-
+    print(2)
     # Fetch recipes from Spoonacular
     recipes = get_recipes_by_ingredients(pantry, request.top_n * 5, request.dietary)
-
+    print(3)
     restrictions = validate_restrictions({
         "diet": request.dietary,
         "intolerances": request.intolerances,
         "excluded_ingredients": request.excluded_ingredients
     })
-
+    print(4)
     filtered_recipes = filter_recipes(recipes, restrictions)
-
+    print(5)
     ranked_recipes = rank_recipes(filtered_recipes, pantry)
-
+    print(6)
     # Simplify results for the frontend
     simplified = []
     for r in recipes:
@@ -68,7 +68,7 @@ def recommend(request: RecommendationRequest):
             "image": r.get("image"),
             "dietary_tags": r.get("diets", [])
         })
-
+    print(7)
     # Cache and return
     # TODO: caching
     return simplified

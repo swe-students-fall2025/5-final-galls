@@ -96,7 +96,7 @@ def validate_restrictions(restrictions):
         'dairy', 'egg', 'gluten', 'grain', 'peanut', 'seafood',
         'sesame', 'shellfish', 'soy', 'sulfite', 'tree nut', 'wheat', 'nuts'
     ]
-    
+    print(1)
     if 'diet' in restrictions and restrictions['diet']:
         diet = restrictions['diet']
         if isinstance(diet, str):
@@ -105,16 +105,16 @@ def validate_restrictions(restrictions):
                 valid['diet'] = diet
         elif isinstance(diet, list):
             valid['diet'] = [d.lower().strip() for d in diet if d.lower().strip() in valid_diets]
-    
+    print(2)
     if 'intolerances' in restrictions and restrictions['intolerances']:
         intolerances = restrictions['intolerances']
         if isinstance(intolerances, list):
             valid['intolerances'] = [i.lower().strip() for i in intolerances 
                                     if i.lower().strip() in valid_intolerances]
-    
+    print(3)
     if 'excluded_ingredients' in restrictions and restrictions['excluded_ingredients']:
         excluded = restrictions['excluded_ingredients']
         if isinstance(excluded, list):
             valid['excluded_ingredients'] = [e.strip() for e in excluded if e.strip()]
-    
+    print(4)
     return valid

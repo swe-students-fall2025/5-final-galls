@@ -14,7 +14,7 @@ app.secret_key = 't3@m5g@lsp@ssw0rd'
 bcrypt = Bcrypt(app)
 
 MONGO_URI = os.getenv("MONGO_URI", "mongodb://mongodb:27017")
-DB_NAME = os.getenv("DB_NAME", "ingredients")
+DB_NAME = os.getenv("DB_NAME", "pantry-pal")
 
 client = MongoClient(MONGO_URI)
 db = client[DB_NAME]
@@ -23,7 +23,7 @@ ingredients = db["ingredients"]
 users = db["users"]
 recommendations = db["recommendations"]
 
-SUGGESTION_API_URL = "http://localhost:8000/recommendations"
+SUGGESTION_API_URL = "http://ml-recommender:8000/recommendations"
 
 '''
 mockIngredients = [
@@ -52,19 +52,20 @@ def load_user(user_id):
 @app.route("/")
 @login_required
 def home():
-    ingredients = list(db.ingredients.find({
-        "user_id": ObjectId(current_user.id)
-    }))
+    # Get current user's ingredients
+    user_ingredients = list(db.ingredients.find({"user_id": ObjectId(current_user.id)}))
+
+    # Get existing recommendations, if any
     rec_doc = recommendations.find_one({"user_id": ObjectId(current_user.id)})
     recipes = rec_doc["recipes"] if rec_doc else []
-
+    print(recipes)
     return render_template(
         "home.html",
         user=current_user,
-        ingredients=ingredients,
-        recipes = recipes,
-        suggestion_api_url="http://localhost:8000/recommendations"
+        ingredients=user_ingredients,
+        recipes=recipes
     )
+
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
@@ -155,7 +156,10 @@ def add_ingredient():
 @app.route("/my-pantry/<ingredient_id>/edit", methods=["GET", "POST"])
 @login_required
 def edit_ingredient(ingredient_id):
-    ingredient = db.ingredients.find_one({"_id": ObjectId(ingredient_id), "user_id": ObjectId(current_user.id)},)
+    ingredient = db.ingredients.find_one({
+        "_id": ObjectId(ingredient_id),
+        "user_id": ObjectId(current_user.id)
+    })
     if ingredient is None:
         return redirect(url_for("my_pantry"))
 
@@ -184,38 +188,47 @@ def add_recipe():
 @app.route("/recommendations", methods=["POST"])
 @login_required
 def recommend_recipes():
-    data = request.get_json() or {}
+    # Get current user's ingredients
+    user_ingredients = list(db.ingredients.find({"user_id": ObjectId(current_user.id)}))
+    ingredient_names = [i["name"] for i in user_ingredients]
 
-    # Get ingredients and preferences from frontend
-    ingredient_names = data.get("ingredients", [])
-    dietary = data.get("dietary", [])
-    top_n = data.get("top_n", 5)
+    # Read top_n from form
+    try:
+        top_n = int(request.form.get("top_n", 5))
+    except ValueError:
+        top_n = 5
 
     payload = {
         "ingredients": ingredient_names,
         "top_n": top_n,
-        "dietary": dietary
+        "dietary": []
     }
 
-    # Call the ML recommender service
     try:
+        # Call ML service
         response = requests.post(SUGGESTION_API_URL, json=payload)
         response.raise_for_status()
         recipes = response.json()
     except Exception as e:
-        print("Error calling ML Recommender:", e)
+        print("Error calling ML Recommender:", e, flush=True)
         recipes = []
 
-    # Save recipes to MongoDB
+    # Save/update recipes in MongoDB
     result = recommendations.update_one(
         {"user_id": ObjectId(current_user.id)},
-        {"$set": {"recipes": recipes}},
+        {"$set": {"recipes": recipes, "user_id": ObjectId(current_user.id)}},
         upsert=True
     )
-    print("Modified count:", result.modified_count, "Upserted ID:", result.upserted_id)
+    print("Saved recipes for user:", current_user.id, flush=True)
+    print("Mongo update result:", result.raw_result, flush=True)
 
-    return jsonify(recipes)
-
+    # Re-render home with updated recipes
+    return render_template(
+        "home.html",
+        user=current_user,
+        ingredients=user_ingredients,
+        recipes=recipes
+    )
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5001)
