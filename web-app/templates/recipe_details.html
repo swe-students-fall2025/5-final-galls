@@ -1,21 +1,21 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div class="page-header">
+<div class="recipe-page">
     <h1>{{ recipe.name }}</h1>
+    <img src="{{ recipe.image }}" alt="{{ recipe.name }}">
+    
+    <p><strong>Matched ingredients:</strong> {{ recipe.matched_ingredients | join(', ')}}</p>
+    <p><strong>Missing ingredients:</strong>
+        {% if recipe.missing_ingredients %}{{ recipe.missing_ingredients | join(', ') }}{% else %}None{% endif %}
+    </p>
+    {% if recipe.dietary_tags %}
+        <p><strong>Dietary Tags:</strong> {{ recipe.dietary_tags | join(', ') }}</p>
+    {% endif %}
+
+    <p><strong>Instructions:</strong> {{ recipe.instructions if recipe.instructions else 'No instructions available.' }}</p>
+
+    <a href="{{ url_for('home') }}">Back to recommendations</a>
 </div>
 
-<img src="{{ recipe.image }}" alt="{{ recipe.name }}" width="250">
-
-<p><strong>Matched ingredients:</strong> {{ recipe.matched_ingredients }}</p>
-<p><strong>Missing ingredients:</strong>
-    {% if recipe.missing_ingredients %}{{ recipe.missing_ingredients | join(', ') }}{% else %}None{% endif %}
-</p>
-{% if recipe.dietary_tags %}
-    <p><strong>Dietary Tags:</strong> {{ recipe.dietary_tags | join(', ') }}</p>
-{% endif %}
-
-<p><strong>Instructions:</strong> {{ recipe.instructions if recipe.instructions else 'No instructions available.' }}</p>
-
-<a href="{{ url_for('home') }}">Back to recommendations</a>
 {% endblock %}

@@ -50,7 +50,7 @@ def recommend(request: RecommendationRequest):
         simplified.append({
             "id": r.get("id"),
             "name": r.get("title"),
-            "matched_ingredients": len(used),  # counting all used ingredients
+            "matched_ingredients": used,  # counting all used ingredients
             "missing_ingredients": missed,
             "image": r.get("image"),
             "dietary_tags": r.get("diets", [])
