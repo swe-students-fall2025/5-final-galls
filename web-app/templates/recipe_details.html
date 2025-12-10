@@ -5,7 +5,7 @@
     <h1>{{ recipe.name }}</h1>
     <img src="{{ recipe.image }}" alt="{{ recipe.name }}">
     
-    <p><strong>Matched ingredients:</strong> {{ recipe.matched_ingredients | join(', ')}}</p>
+    <p><strong>Matched ingredients:</strong> {{ recipe.matched_ingredients | join(', ') }}</p>
     <p><strong>Missing ingredients:</strong>
         {% if recipe.missing_ingredients %}{{ recipe.missing_ingredients | join(', ') }}{% else %}None{% endif %}
     </p>
@@ -13,9 +13,29 @@
         <p><strong>Dietary Tags:</strong> {{ recipe.dietary_tags | join(', ') }}</p>
     {% endif %}
 
-    <p><strong>Instructions:</strong> {{ recipe.instructions if recipe.instructions else 'No instructions available.' }}</p>
+    <h2>Instructions</h2>
+    {% if recipe.instructions %}
+        {% for section in recipe.instructions %}
+            <h3>{{ section.name }}</h3>
+            <ol>
+                {% for step in section.steps %}
+                    <li>
+                        {{ step.instruction }}
+                        
+                        {% if step.equipment %}
+                            <br><em>Equipment: {{ step.equipment | join(', ') }}</em>
+                        {% endif %}
+                        {% if step.time %}
+                            <br><em>Time: {{ step.time.number }} {{ step.time.unit }}</em>
+                        {% endif %}
+                    </li>
+                {% endfor %}
+            </ol>
+        {% endfor %}
+    {% else %}
+        <p>No instructions available.</p>
+    {% endif %}
 
     <a href="{{ url_for('home') }}">Back to recommendations</a>
 </div>
-
 {% endblock %}
