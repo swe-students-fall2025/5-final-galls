@@ -24,9 +24,7 @@ def client():
     with app.test_client() as client:
         yield client
 
-# -------------------
-# REGISTER ROUTE TESTS
-# -------------------
+
 
 @patch("app.db.users.find_one")
 @patch("app.db.users.insert_one")
@@ -45,7 +43,7 @@ def test_register_success(mock_insert, mock_find, client):
 
     # Should redirect to home page
     assert response.status_code == 200
-    assert b"My Pantry" in response.data or b"Home" in response.data  # adjust based on your home.html content
+    assert b"My Pantry" in response.data or b"Home" in response.data
 
 @patch("app.db.users.find_one")
 def test_register_existing_email(mock_find, client):
@@ -61,9 +59,7 @@ def test_register_existing_email(mock_find, client):
     assert b"Account with this email already exists." in response.data
     assert response.status_code == 200
 
-# -------------------
-# LOGIN ROUTE TESTS
-# -------------------
+
 
 @patch("app.db.users.find_one")
 def test_login_success(mock_find, client):
