@@ -58,7 +58,6 @@ def home():
     # Get existing recommendations, if any
     rec_doc = recommendations.find_one({"user_id": ObjectId(current_user.id)})
     recipes = rec_doc["recipes"] if rec_doc else []
-    print(recipes)
     return render_template(
         "home.html",
         user=current_user,
@@ -128,7 +127,24 @@ def register():
 @app.route("/my-recipes")
 @login_required
 def my_recipes():
-    return render_template("my_recipes.html")
+    # Get current user's ingredients
+    user_ingredients = list(db.ingredients.find({"user_id": ObjectId(current_user.id)}))
+
+    # Get existing recommendations, if any
+    user_doc = db.users.find_one({"_id": ObjectId(current_user.id)})
+    saved_recipe_ids = user_doc.get("bookmarked_recipes", [])  
+
+    rec_doc = recommendations.find_one({"user_id": ObjectId(current_user.id)})
+    all_recipes = rec_doc.get("recipes", []) if rec_doc else []
+
+    saved_recipes = [r for r in all_recipes if r["id"] in saved_recipe_ids]
+
+    return render_template(
+        "my_recipes.html",
+        user=current_user,
+        ingredients=user_ingredients,
+        recipes=saved_recipes
+    )
 
 @app.route("/my-pantry")
 @login_required
@@ -258,7 +274,33 @@ def recipe_details(recipe_id):
 
     return render_template("recipe_details.html", recipe=recipe)
 
+@app.route('/recipes/<recipe_id>/bookmarked', methods=["POST"])
+@login_required
+def bookmark_recipe(recipe_id):
+    try:
+        recipe_id = int(recipe_id)
+    except ValueError:
+        return "Invalid recipe ID", 400
 
+    rec_doc = recommendations.find_one({"user_id": ObjectId(current_user.id)})
+    if not rec_doc:
+        return "No recommendations found for user", 404
+
+    recipe = next((r for r in rec_doc.get("recipes", []) if r["id"] == recipe_id), None)
+    if not recipe:
+        return "Recipe not found", 404
+    
+    print("here 4")
+    db.users.update_one(
+        {"_id": ObjectId(current_user.id)},
+        {"$addToSet": {"bookmarked_recipes": recipe["id"]}}
+    )
+
+    print("here 5")
+
+    return "", 200
+
+    
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5001)

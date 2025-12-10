@@ -2,8 +2,6 @@
 
 [![ML Recommender CI/CD](https://github.com/swe-students-fall2025/5-final-galls/actions/workflows/ml-recommender.yml/badge.svg)](https://github.com/swe-students-fall2025/5-final-galls/actions/workflows/ml-recommender.yml)
 
-An exercise to put to practice software development teamwork, subsystem communication, containers, deployment, and CI/CD pipelines. See [instructions](./instructions.md) for details.
-
 # Pantry Pal
 ### Smart Recipe Reccomendations Based on What You Already Have!
 
@@ -35,6 +33,10 @@ Pantry Pal is an intelligent recipe recommendation system that helps you discove
 
 
 ## Docker Images
+[sen5217/web-app](https://hub.docker.com/r/sen5217/web-app)
+
+[sen5217/ml-recommender](https://hub.docker.com/r/sen5217/ml-recommender)
+
 
 ## System Architecture
 
