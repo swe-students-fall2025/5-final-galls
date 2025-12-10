@@ -22,6 +22,7 @@ jobs:
           cd ml-recommender
           pip install -r requirements.txt
           pip install pytest pytest-cov
+          pip install pytest pytest-cov httpx
 
       - name: Run tests
         working-directory: ml-recommender
