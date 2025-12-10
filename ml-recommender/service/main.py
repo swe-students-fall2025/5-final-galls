@@ -36,7 +36,7 @@ class RecommendationRequest(BaseModel):
     intolerances: Optional[List[str]] = None
     excluded_ingredients: Optional[List[str]] = None
 
-API_KEY = os.getenv("SPOONACULAR_API_KEY","1630fb1bb80c4451896924049cf16ebf")
+API_KEY = os.getenv("SPOONACULAR_API_KEY","bb717f69d3f34841aa7761d88c81ce7b")
 BASE_URL = "https://api.spoonacular.com"
 
 def get_recipe_instructions(recipe_id: int):
