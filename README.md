@@ -3,7 +3,7 @@
 # Pantry Pal
 ### Smart Recipe Reccomendations Based on What You Already Have!
 
-Pantry Pal is an intelligent recipie reccomendation system that helps you discover delicious recipies using the ingredients you already have in your kitchen!
+Pantry Pal is an intelligent recipe recommendation system that helps you discover delicious recipes using the ingredients you already have in your kitchen!
 
 
 ## Team
@@ -19,8 +19,8 @@ Pantry Pal is an intelligent recipie reccomendation system that helps you discov
 ### Intelligent Recipe Recommendations
 - Instantly discover recipes you can make with what you have!
 - Recipes ranked by how many ingredients you already own
-- Clear list of what you need to buy to complete a recipie
-- Access to 360,000+ recipies from Spoonacular API
+- Clear list of what you need to buy to complete a recipe
+- Access to 360,000+ recipes from Spoonacular API
 ### Dietary Preferences and Restrictions
 - Filter by vegetarian, vegan, gluten-free, keto, paleo, pescatarian, and primal
 - Automatically exclude recipes with common intolerances
@@ -39,28 +39,27 @@ Pantry Pal is an intelligent recipie reccomendation system that helps you discov
 ## Configuration
 
 ## Project Structure
-'''
+```plaintext
 smart-recipe-recommender/
 │
 ├── pantry-service/
-│   ├── app/
-│   ├── tests/
-│   ├── Dockerfile
-│   └── requirements.txt
+│ ├── app/
+│ ├── tests/
+│ ├── Dockerfile
+│ └── requirements.txt
 │
 ├── ml-recommender/
-│   ├── service/
-│   ├── tests/
-│   ├── Dockerfile
-│   └── requirements.txt
+│ ├── service/
+│ ├── tests/
+│ ├── Dockerfile
+│ └── requirements.txt
 │
 ├── infra/
-│   ├── docker-compose.dev.yml
-│   └── deployment-scripts/
+│ ├── docker-compose.dev.yml
+│ └── deployment-scripts/
 │
 └── README.md
-
-'''
+```
 
 
 
