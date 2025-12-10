@@ -4,7 +4,7 @@ from typing import List, Optional
 import requests
 import os
 
-API_KEY = os.getenv("SPOONACULAR_API_KEY", "1630fb1bb80c4451896924049cf16ebf")
+API_KEY = os.getenv("SPOONACULAR_API_KEY", "bd955ea9956f4a4ea378d9e07590d437")
 if not API_KEY:
     raise ValueError("SPOONACULAR_API_KEY is not set in environment variables")
 
@@ -44,12 +44,12 @@ def get_recipes_by_ingredients(ingredients: List[str], top_n: int, dietary: Opti
 
 def get_recipe_instructions(recipe_id: int, step_breakdown: bool = True):
     url = f"{BASE_URL}/recipes/{recipe_id}/analyzedInstructions"
-    
+
     params = {
         "apiKey": API_KEY,
         "stepBreakdown": step_breakdown
     }
-    
+
     try:
         response = requests.get(url, params=params)
         response.raise_for_status()
@@ -63,15 +63,15 @@ def format_instructions(analyzed_instructions):
     """Format analyzed instructions into a cleaner structure."""
     if not analyzed_instructions:
         return []
-    
+
     formatted = []
-    
+
     for instruction_set in analyzed_instructions:
         section = {
             'name': instruction_set.get('name', 'Main Recipe'),
             'steps': []
         }
-        
+
         for step in instruction_set.get('steps', []):
             step_info = {
                 'number': step.get('number'),
@@ -79,14 +79,14 @@ def format_instructions(analyzed_instructions):
                 'ingredients': [ing.get('name') for ing in step.get('ingredients', [])],
                 'equipment': [eq.get('name') for eq in step.get('equipment', [])],
             }
-            
+
             if 'length' in step:
                 step_info['time'] = step['length']
-            
+
             section['steps'].append(step_info)
-        
+
         formatted.append(section)
-    
+
     return formatted
 
 
@@ -107,11 +107,11 @@ def recommend(request: RecommendationRequest):
             "image": r.get("image"),
             "dietary_tags": r.get("diets", [])
         }
-        
+
         if request.include_instructions:
             instructions = get_recipe_instructions(r.get("id"))
             recipe_data["instructions"] = format_instructions(instructions)
-        
+
         simplified.append(recipe_data)
 
     return simplified
@@ -120,8 +120,8 @@ def recommend(request: RecommendationRequest):
 @app.get("/recipe/{recipe_id}/instructions")
 def get_instructions(recipe_id: int):
     instructions = get_recipe_instructions(recipe_id)
-    
+
     if instructions is None:
         raise HTTPException(status_code=404, detail="Instructions not found")
-    
+
     return format_instructions(instructions)
