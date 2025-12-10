@@ -62,8 +62,9 @@ def recommend(request: RecommendationRequest):
         missed = [i["name"] for i in r.get("missedIngredients") or []]
 
         simplified.append({
+            "id": r.get("id"),
             "name": r.get("title"),
-            "matched_ingredients": len(used),
+            "matched_ingredients": used,
             "missing_ingredients": missed,
             "image": r.get("image"),
             "dietary_tags": r.get("diets", [])

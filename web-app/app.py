@@ -209,6 +209,8 @@ def recommend_recipes():
         response = requests.post(SUGGESTION_API_URL, json=payload)
         response.raise_for_status()
         recipes = response.json()
+        # print("ML Recommender response:", recipes, flush=True)
+
     except Exception as e:
         print("Error calling ML Recommender:", e, flush=True)
         recipes = []
@@ -219,8 +221,6 @@ def recommend_recipes():
         {"$set": {"recipes": recipes, "user_id": ObjectId(current_user.id)}},
         upsert=True
     )
-    print("Saved recipes for user:", current_user.id, flush=True)
-    print("Mongo update result:", result.raw_result, flush=True)
 
     # Re-render home with updated recipes
     return render_template(
@@ -229,6 +229,20 @@ def recommend_recipes():
         ingredients=user_ingredients,
         recipes=recipes
     )
+
+@app.route("/recipes/<recipe_id>")
+@login_required
+def recipe_details(recipe_id):
+    rec_doc = recommendations.find_one({"user_id": ObjectId(current_user.id)})
+    if not rec_doc:
+        return redirect(url_for("home"))
+
+    recipe = next((r for r in rec_doc.get("recipes", []) if str(r.get("id")) == recipe_id), None)
+    if not recipe:
+        return redirect(url_for("home"))
+
+    return render_template("recipe_details.html", recipe=recipe)
+
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5001)

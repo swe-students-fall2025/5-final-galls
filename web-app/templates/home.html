@@ -40,9 +40,15 @@
         {% if recipes %}
             {% for r in recipes %}
                 <div class="recipe-card">
-                    <h4>{{ r.name }}</h4>
+                    {% if r.get('id') %}
+                        <a href="{{ url_for('recipe_details', recipe_id=r.get('id')) }}">
+                            <h4>{{ r.get('name') }}</h4>
+                        </a>
+                    {% else %}
+                        <h4>{{ r.get('name') }}</h4>
+                    {% endif %}
                     <img src="{{ r.image }}" alt="{{ r.name }}" width="120">
-                    <p><strong>Matched ingredients:</strong> {{ r.matched_ingredients }}</p>
+                    <p><strong>Matched ingredients:</strong> {{ r.matched_ingredients | join(', ')}}</p>
                     <p><strong>Missing ingredients:</strong>
                         {% if r.missing_ingredients %}{{ r.missing_ingredients | join(', ') }}{% else %}None{% endif %}
                     </p>
