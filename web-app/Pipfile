@@ -10,12 +10,13 @@ dotenv = "*"
 flask-login = "*"
 requests = "*"
 pymongo = "*"
-exceptiongroup = "*"
 typing-extensions = "*"
 tomli = "*"
+exceptiongroup = "*"
 
 [dev-packages]
 pytest = "*"
+coverage = "*"
 
 [requires]
 python_version = "3.10"

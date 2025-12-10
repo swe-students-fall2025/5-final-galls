@@ -6,7 +6,7 @@ import os
 
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 from app import app, bcrypt, User
-
+import requests
 
 @pytest.fixture
 def _test_client():
@@ -26,6 +26,20 @@ def test_user(monkeypatch):
     user = testUser(ObjectId())
     monkeypatch.setattr("app.current_user", user)
     return user
+
+@pytest.fixture
+def mock_requests_post(monkeypatch):
+    """Mock post request to mock calling the ML API"""
+    def _mock_post(*args, **kwargs):
+        class MockResponse:
+            def json(self):
+                return [{"name": "Test Recipe"}]
+            def raise_for_status(self):
+                pass
+        return MockResponse()
+    
+    monkeypatch.setattr(requests, "post", _mock_post)
+    return _mock_post
 
 
 @patch("app.recommendations")
@@ -206,3 +220,42 @@ def test_delete_ingredient_deletes_and_redirects(mock_db, _test_client, test_use
     mock_db.ingredients.delete_one.assert_called_once()
     filt = mock_db.ingredients.delete_one.call_args[0][0]
     assert filt["_id"] == ingredient_id
+
+
+@patch("app.recommendations")
+@patch("app.requests.post")
+@patch("app.db")
+def test_recommend_recipes(mock_db, mock_requests_post, mock_recommendations, _test_client, test_user): 
+    """POST /home/recommendations should return recipes correct recipes."""
+    ingredient_id = ObjectId()
+
+    mock_db.ingredients.find.return_value = [
+        {"_id": ingredient_id, "user_id": ObjectId(test_user.id), "name": "olive oil", "quantity": "1", "notes": "",},
+        {"_id": ingredient_id, "user_id": ObjectId(test_user.id), "name": "chicken", "quantity": "1lb", "notes": "",}
+    ]
+
+    # Fake ML response 
+    fake_recipes = [
+        {"name": "Turbo Chicken", "image": "https://img.spoonacular.com/recipes/663971-312x231.jpg"},
+        {"name": "Crispy Buttermilk Fried Chicken", "image": "https://img.spoonacular.com/recipes/640803-312x231.jpg"}
+    ]
+
+    # Mock requests.post call
+    mock_res = mock_requests_post.return_value
+    mock_res.json.return_value = fake_recipes 
+    mock_res.raise_for_status.return_value = None
+    res = _test_client.post("/recommendations", data={"top_n": 5})
+
+    assert res.status_code == 200
+
+    mock_db.ingredients.find.assert_called_once_with({"user_id": ObjectId(test_user.id)})
+
+    # Assert ML API called correctly
+    mock_requests_post.assert_called_once()
+    sent = mock_requests_post.call_args[1]["json"]
+    assert sent["ingredients"] == ["olive oil", "chicken"]
+    assert sent["top_n"] == 5
+
+    mock_recommendations.update_one.assert_called_once()
+    assert b"Turbo Chicken" in res.data
+    assert b"Crispy Buttermilk Fried Chicken" in res.data

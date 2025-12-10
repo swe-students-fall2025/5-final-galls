@@ -51,8 +51,12 @@
                     {% for r in recipes %}
                         <a href="/recipes/{{ r.id }}" class="recipe-card-link">
                             <div class="recipe-card">
-                                <img src="{{ r.image }}" alt="{{ r.name }}">
-                    
+                                {% if r.image %}
+                                    <img src="{{ r.image }}" alt="{{ r.name }}">
+                                {% else %}
+                                    <img src="{{ url_for('static', filename='logo.png') }}" alt="logo" id="logo-recipe-card">
+                                {% endif %}
+
                                 <div class="recipe-info">
                                     <div class="recipe-card-title">
                                         <h3>{{ r.name | truncate(35, True, '...') }}</h3>
