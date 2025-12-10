@@ -252,6 +252,94 @@ nav a {
     text-align: left;
 }
 
+/*----register and login styling----*/
+
+.auth-page {
+    max-width: 400px;
+    margin: 5rem auto;
+    padding: 2rem;
+    background: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.06);
+    font-family: 'Poppins', sans-serif;
+}
+
+.auth-page h1,
+.auth-page h2 {
+    color: var(--text-color);
+    text-align: center;
+    margin-bottom: 1.5rem;
+}
+
+.auth-page form {
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+}
+
+.auth-page label {
+    margin-bottom: 0.05rem;
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: var(--text-color);
+}
+
+.auth-page input[type="text"],
+.auth-page input[type="password"],
+.auth-page input[type="username"],
+.auth-page input[type="email"] {
+    padding: 0.45rem 0.5rem;
+    font-size: 0.9rem;
+}
+
+
+.auth-page input:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 2px rgba(81, 112, 89, 0.2);
+}
+
+.auth-page button {
+    padding: 0.55rem;
+    border-radius: 6px;
+    border: none;
+    font-size: 1rem;
+    font-weight: 500;
+    margin-top: 0.5rem;
+    background-color: var(--primary-color);
+    color: var(--secondary-color);
+    border: 2px solid var(--tertiary-color);
+}
+
+.auth-page button:hover {
+    background-color: var(--tertiary-color);
+    color: var(--secondary-color);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+.auth-page p {
+    text-align: center;
+    margin-top: 1rem;
+    font-size: 0.9rem;
+}
+
+.auth-page a {
+    color: var(--primary-color);
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.auth-page a:hover {
+    text-decoration: underline;
+}
+
+.auth-error {
+    color: #c0392b;
+    text-align: center;
+    margin-bottom: 1rem;
+    font-weight: 500;
+}
+
 
 @media (max-width: 1300px) { 
     .pantry-preview-table,
