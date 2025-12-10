@@ -1,1 +1,0 @@
-# lets the frontend know why a recipe was recommended or show recipe categories

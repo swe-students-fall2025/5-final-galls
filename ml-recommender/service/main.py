@@ -13,8 +13,6 @@ from logic.filters import filter_recipes
 from logic.scorer import rank_recipes
 #from logic.ingredients import get_ingredients
 
-# TODO: import caching
-
 app = FastAPI()
 
 origins = [
@@ -81,7 +79,6 @@ def recommend(request: RecommendationRequest):
     # Preprocess ingredients
     pantry = normalize_ingredients(request.ingredients)
     print(1)
-    # TODO: caching
     print(2)
     # Fetch recipes from Spoonacular
     recipes = get_recipes_by_ingredients(pantry, request.top_n * 5, request.dietary)
