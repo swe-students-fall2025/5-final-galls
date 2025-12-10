@@ -9,9 +9,9 @@ jobs:
   log:
     runs-on: ubuntu-latest
     env:
-      PIPENV_PIPFILE: .github/workflows/Pipfile # so this script doesn't use the Pipfile in the root directory
+      PIPENV_PIPFILE: .github/workflows/Pipfile 
       COMMIT_LOG_API: ${{ secrets.COMMIT_LOG_API }}
-      GITHUB_LOGIN: ${{ github.actor }} # github login also available in github.triggering_actor, github.event.sender.login
+      GITHUB_LOGIN: ${{ github.actor }} 
       COMMITS: ${{ toJSON(github.event.commits) }}
       REPOSITORY_URL: ${{ github.repositoryUrl }}
       EVENT_TYPE: ${{ github.event_name }}
@@ -22,7 +22,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
         with:
-          fetch-depth: 0 # this is important so git fetches all history.. the actions/checkout by default fetches all history as one commit which throws off stats
+          fetch-depth: 0
       - uses: actions/setup-python@v3
         with:
           python-version: "^3.9"

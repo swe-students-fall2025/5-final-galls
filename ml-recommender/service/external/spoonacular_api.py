@@ -13,6 +13,7 @@ COMPLEX_SEARCH_URL = f"{BASE_URL}/recipes/complexSearch"
 
 app = FastAPI()
 
+
 class RecommendationRequest(BaseModel):
     ingredients: List[str]
     top_n: int = 5
