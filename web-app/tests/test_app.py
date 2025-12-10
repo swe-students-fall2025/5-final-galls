@@ -15,8 +15,9 @@ def _test_client():
         yield client
 
 
+@patch("app.recommendations")
 @patch("app.db")
-def test_login_success(mock_db, _test_client):
+def test_login_success(mock_db, mock_recommendations, _test_client):
     mock_user_id = ObjectId()
     hashed_pw = bcrypt.generate_password_hash("password123").decode("utf-8")
 
@@ -27,7 +28,8 @@ def test_login_success(mock_db, _test_client):
         "password": hashed_pw,
     }
 
-    # Mock ingredients collection so home() doesn't hit real MongoDB
+    # Mock recommendations so home() doesn't hit MongoDB
+    mock_recommendations.find_one.return_value = None
     mock_db.ingredients.find.return_value = []
 
     response = _test_client.post(
@@ -37,6 +39,7 @@ def test_login_success(mock_db, _test_client):
     )
 
     assert response.status_code == 200
+
 
 
 
