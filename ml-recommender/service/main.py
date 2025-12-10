@@ -29,7 +29,6 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-
 class RecommendationRequest(BaseModel):
     ingredients: List[str]
     top_n: int = 5
@@ -37,13 +36,10 @@ class RecommendationRequest(BaseModel):
     intolerances: Optional[List[str]] = None
     excluded_ingredients: Optional[List[str]] = None
 
-
 API_KEY = os.getenv("SPOONACULAR_API_KEY","1630fb1bb80c4451896924049cf16ebf")
 BASE_URL = "https://api.spoonacular.com"
 
-
 def get_recipe_instructions(recipe_id: int):
-
 
     url = f"{BASE_URL}/recipes/{recipe_id}/analyzedInstructions"
     params = {"apiKey": API_KEY, "stepBreakdown": True}
@@ -111,6 +107,5 @@ def recommend(request: RecommendationRequest):
             "instructions": instructions
         })
     print(7)
-    # Cache and return
-    # TODO: caching
+
     return simplified
