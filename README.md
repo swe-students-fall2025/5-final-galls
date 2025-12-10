@@ -20,6 +20,9 @@ Pantry Pal is an intelligent recipe recommendation system that helps you discove
 ## Features
 ### Technical Features
 - User data stored in MongoDB
+- User authentication with secure password hashing
+- Automated CI/CD pipeline with github actions
+- Responsive web interface
 
 ### Intelligent Recipe Recommendations
 - Instantly discover recipes you can make with what you have!
@@ -33,13 +36,14 @@ Pantry Pal is an intelligent recipe recommendation system that helps you discove
 - Block specific ingredients you dislike
 - Only see recipes that meet all your requirements!
 
-
-## Docker Images
-
 ## System Architecture
 
 ## Installation and Setup
 ### Prerequisites
+
+### Quick Start
+
+
 
 ### Run the Web Application
 
