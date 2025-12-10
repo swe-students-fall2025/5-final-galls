@@ -21,6 +21,10 @@ db = client[DB_NAME]
 
 ingredients = db["ingredients"]
 users = db["users"]
+recommendations = db["recommendations"]
+
+SUGGESTION_API_URL = "http://localhost:8000/recommendations"
+
 '''
 mockIngredients = [
     {"name": "Flour", "quantity": "1 lb", "notes": "half empty"},
@@ -51,11 +55,14 @@ def home():
     ingredients = list(db.ingredients.find({
         "user_id": ObjectId(current_user.id)
     }))
+    rec_doc = recommendations.find_one({"user_id": ObjectId(current_user.id)})
+    recipes = rec_doc["recipes"] if rec_doc else []
 
     return render_template(
         "home.html",
         user=current_user,
         ingredients=ingredients,
+        recipes = recipes,
         suggestion_api_url="http://localhost:8000/recommendations"
     )
 
@@ -174,24 +181,23 @@ def delete_ingredient(ingredient_id):
 def add_recipe():
     return render_template("add_recipe.html")
 
-SUGGESTION_API_URL = "http://localhost:8000/recommendations"
-
 @app.route("/recommendations", methods=["POST"])
 @login_required
 def recommend_recipes():
-    # Get pantry ingredients from your DB
-    user_ingredients = list(db.ingredients.find({"user_id": ObjectId(current_user.id)}))
-    ingredient_names = [i["name"] for i in user_ingredients]
+    data = request.get_json() or {}
 
-    # Optional: get dietary preferences from frontend form
-    dietary = request.form.getlist("dietary")
+    # Get ingredients and preferences from frontend
+    ingredient_names = data.get("ingredients", [])
+    dietary = data.get("dietary", [])
+    top_n = data.get("top_n", 5)
 
     payload = {
         "ingredients": ingredient_names,
-        "top_n": 5,
+        "top_n": top_n,
         "dietary": dietary
     }
 
+    # Call the ML recommender service
     try:
         response = requests.post(SUGGESTION_API_URL, json=payload)
         response.raise_for_status()
@@ -200,7 +206,16 @@ def recommend_recipes():
         print("Error calling ML Recommender:", e)
         recipes = []
 
+    # Save recipes to MongoDB
+    result = recommendations.update_one(
+        {"user_id": ObjectId(current_user.id)},
+        {"$set": {"recipes": recipes}},
+        upsert=True
+    )
+    print("Modified count:", result.modified_count, "Upserted ID:", result.upserted_id)
+
     return jsonify(recipes)
+
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5001)
