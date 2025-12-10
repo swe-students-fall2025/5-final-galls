@@ -10,6 +10,7 @@ dotenv = "*"
 flask-login = "*"
 requests = "*"
 pymongo = "*"
+exceptiongroup = "*"
 
 [dev-packages]
 pytest = "*"
