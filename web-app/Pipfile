@@ -11,6 +11,7 @@ flask-login = "*"
 requests = "*"
 pymongo = "*"
 exceptiongroup = "*"
+typing-extensions = "*"
 
 [dev-packages]
 pytest = "*"
