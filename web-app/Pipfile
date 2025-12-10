@@ -12,6 +12,7 @@ requests = "*"
 pymongo = "*"
 exceptiongroup = "*"
 typing-extensions = "*"
+tomli = "*"
 
 [dev-packages]
 pytest = "*"
