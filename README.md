@@ -1,4 +1,6 @@
-[![Web App CI](https://github.com/swe-students-fall2025/5-final-galls/actions/workflows/web-app.yml/badge.svg)](https://github.com/swe-students-fall2025/5-final-galls/actions/workflows/web-app-ci.yml)
+![Web-App CI/CD][(https://github.com/swe-students-fall2025/5-final-galls/actions/workflows/web-app.yml/badge.svg)](https://github.com/swe-students-fall2025/5-final-galls/actions/workflows/web-app.yml)
+
+An exercise to put to practice software development teamwork, subsystem communication, containers, deployment, and CI/CD pipelines. See [instructions](./instructions.md) for details.
 
 # Pantry Pal
 ### Smart Recipe Reccomendations Based on What You Already Have!
@@ -14,13 +16,15 @@ Pantry Pal is an intelligent recipe recommendation system that helps you discove
 - Sydney Nadeau [github](https://github.com/sen5217)
 
 ## Features
-### Smart Pantry Management
-- 
+### Technical Features
+- User data stored in MongoDB
+
 ### Intelligent Recipe Recommendations
 - Instantly discover recipes you can make with what you have!
 - Recipes ranked by how many ingredients you already own
 - Clear list of what you need to buy to complete a recipe
 - Access to 360,000+ recipes from Spoonacular API
+
 ### Dietary Preferences and Restrictions
 - Filter by vegetarian, vegan, gluten-free, keto, paleo, pescatarian, and primal
 - Automatically exclude recipes with common intolerances
@@ -32,35 +36,10 @@ Pantry Pal is an intelligent recipe recommendation system that helps you discove
 
 ## System Architecture
 
-## Quick Start
+## Installation and Setup
+### Prerequisites
 
-## API Documentation
+### Run the Web Application
 
-## Configuration
-
-## Project Structure
-```plaintext
-smart-recipe-recommender/
-│
-├── pantry-service/
-│ ├── app/
-│ ├── tests/
-│ ├── Dockerfile
-│ └── requirements.txt
-│
-├── ml-recommender/
-│ ├── service/
-│ ├── tests/
-│ ├── Dockerfile
-│ └── requirements.txt
-│
-├── infra/
-│ ├── docker-compose.dev.yml
-│ └── deployment-scripts/
-│
-└── README.md
-```
-
-
-
-
+## Environment Variables
+### Example .env file
