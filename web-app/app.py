@@ -52,17 +52,21 @@ def load_user(user_id):
 @app.route("/")
 @login_required
 def home():
-    # Get current user's ingredients
     user_ingredients = list(db.ingredients.find({"user_id": ObjectId(current_user.id)}))
 
-    # Get existing recommendations, if any
+    user_doc = db.users.find_one({"_id": ObjectId(current_user.id)})
+    saved_recipe_ids = user_doc.get("bookmarked_recipes", [])
+
     rec_doc = recommendations.find_one({"user_id": ObjectId(current_user.id)})
-    recipes = rec_doc["recipes"] if rec_doc else []
+    all_recipes = rec_doc.get("recipes", []) if rec_doc else []
+
+    unsaved_recipes = [r for r in all_recipes if r["id"] not in saved_recipe_ids]
+
     return render_template(
         "home.html",
         user=current_user,
         ingredients=user_ingredients,
-        recipes=recipes
+        recipes=unsaved_recipes
     )
 
 
@@ -274,6 +278,7 @@ def recipe_details(recipe_id):
 
     return render_template("recipe_details.html", recipe=recipe)
 
+
 @app.route('/recipes/<recipe_id>/bookmarked', methods=["POST"])
 @login_required
 def bookmark_recipe(recipe_id):
@@ -290,13 +295,10 @@ def bookmark_recipe(recipe_id):
     if not recipe:
         return "Recipe not found", 404
     
-    print("here 4")
     db.users.update_one(
         {"_id": ObjectId(current_user.id)},
         {"$addToSet": {"bookmarked_recipes": recipe["id"]}}
     )
-
-    print("here 5")
 
     return "", 200
 
