@@ -38,6 +38,7 @@ def get_recipes_by_ingredients(ingredients: List[str], top_n: int, dietary: Opti
         resp.raise_for_status()
         return resp.json().get("results", [])
     except requests.RequestException as e:
+        print(e,e.response)
         raise HTTPException(status_code=500, detail=f"Error fetching recipes: {e}")
 
 

@@ -58,7 +58,7 @@ def home():
     # Get existing recommendations, if any
     rec_doc = recommendations.find_one({"user_id": ObjectId(current_user.id)})
     recipes = rec_doc["recipes"] if rec_doc else []
-
+    print(recipes)
     return render_template(
         "home.html",
         user=current_user,

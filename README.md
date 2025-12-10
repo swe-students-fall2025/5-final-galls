@@ -11,7 +11,7 @@ Pantry Pal is an intelligent recipe recommendation system that helps you discove
 - Luna Suzuki [github](https://github.com/lunasuzuki)
 - Aden Juda [github](https://github.com/yungsemitone)
 - Lucy Hartigan [github](https://github.com/lucyhartigan)
-- Sydney Nadeau [github]()
+- Sydney Nadeau [github](https://github.com/sen5217)
 
 ## Features
 ### Smart Pantry Management
