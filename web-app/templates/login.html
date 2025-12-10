@@ -1,21 +1,22 @@
 {% extends "base.html" %}
 {% block content %}
+<div class="auth-page">
 
-<h2>Login</h2>
+    <h2>Login</h2>
 
-{% if error %}
-    <p style="color: red;">{{ error }}</p>
-{% endif %}
+    {% if error %}
+        <p class="auth-error">{{ error }}</p>
+    {% endif %}
+    <form action="{{ url_for('login') }}" method="POST">
+        <label>Username:</label>
+        <input type="text" name="username" placeholder="username" required><br>
 
-<form action="{{ url_for('login') }}" method="POST">
-    <label>Username:</label><br>
-    <input type="text" name="username" placeholder="username" required><br><br>
+        <label>Password:</label>
+        <input type="password" name="password" placeholder="password" required><br>
 
-    <label>Password:</label><br>
-    <input type="password" name="password" placeholder="password" required><br><br>
-
-    <button type="submit">Log In</button>
-</form>
-<p>Need to create an account? <a href="/register">Register</a></p>
+        <button type="submit">Log In</button>
+    </form>
+    <p>Need to create an account? <a href="/register">Register</a></p>
+</div>
 
 {% endblock %}
