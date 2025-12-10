@@ -77,7 +77,7 @@ def login():
 
         user = User(user_doc)
         login_user(user)
-        return redirect(url_for("index"))
+        return redirect(url_for("home"))
 
     return render_template("login.html")
 
@@ -96,7 +96,7 @@ def register():
 
         existing = db.users.find_one({"email": email})
         if existing:
-            error= "Account with this email already exists."
+            error = "Account with this email already exists."
             return render_template("register.html", error=error)
 
         user_doc = {
@@ -104,14 +104,18 @@ def register():
             "password": hashed_password,
             "username": username
         }
-        db.users.insert_one(user_doc)
+
+        # Insert once and get the inserted _id
+        result = db.users.insert_one(user_doc)
+        user_doc["_id"] = result.inserted_id
 
         user = User(user_doc)
         login_user(user)
 
-        return redirect(url_for("index"))
+        return redirect(url_for("home"))
 
     return render_template("register.html")
+
 
 @app.route("/my-recipes")
 @login_required
