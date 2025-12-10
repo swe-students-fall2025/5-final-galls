@@ -2,7 +2,16 @@
 
 {% block content %}
 <div class="page-header">
-    <h1>Recommended Recipes For {{user.username}}</h1>
+    <h1>Recommended Recipes for {{user.username}}</h1>
+</div>
+
+<!-- Recommendation Button -->
+<div class="recommendation-results">
+    
+    <button id="get-recommendations-btn" class="btn btn-success">
+        Get Recipe Recommendations!
+    </button>
+    <div id="recommendation-results"></div>
 </div>
 
 <div class="pantry-preview">
@@ -21,7 +30,7 @@
             <tbody>
                 {% for ingredient in ingredients %}
                 <tr>
-                    <td><strong>{{ ingredient.name }}</strong></td>
+                    <td>{{ ingredient.name }}</td>
                     <td>{{ ingredient.quantity if ingredient.quantity else '-' }}</td>
                     <td>{{ ingredient.notes if ingredient.notes else '-' }}</td>
                 </tr>
@@ -33,39 +42,16 @@
         {% endif %}
     </div>
 </div>
-<div class="recommendation-results">
-    <h3>Recommended Recipes</h3>
 
-    <!-- Display saved recipes from Flask -->
-    <div id="recommendation-results">
-        {% if recipes %}
-            {% for r in recipes %}
-                <div class="recipe-card">
-                    <h4>{{ r.name }}</h4>
-                    <img src="{{ r.image }}" alt="{{ r.name }}" width="120">
-                    <p><strong>Matched ingredients:</strong> {{ r.matched_ingredients }}</p>
-                    <p><strong>Missing ingredients:</strong>
-                        {% if r.missing_ingredients %}{{ r.missing_ingredients | join(', ') }}{% else %}None{% endif %}
-                    </p>
-                    {% if r.dietary_tags %}
-                        <p><strong>Dietary Tags:</strong> {{ r.dietary_tags | join(', ') }}</p>
-                    {% endif %}
-                </div>
-            {% endfor %}
-        {% else %}
-            <p>No recipes found for your pantry.</p>
-        {% endif %}
+<section class="recipe">
+    <div class="recipe-grid">
+          
     </div>
-
-    <!-- Recommendation Button -->
-    <button id="get-recommendations-btn" class="btn btn-success">
-        Get New Recommendations
-    </button>
-</div>
-
-<script>
-    const ingredientNames = JSON.parse('{{ ingredients | map(attribute="name") | list | tojson | safe }}');
-    const suggestionUrl = "{{ suggestion_api_url }}";
+</section>
+    <script>
+        // Prepare ingredient names from Flask
+        const ingredientNames = JSON.parse('{{ ingredients | map(attribute="name") | list | tojson | safe }}');
+        const suggestionUrl = "{{ suggestion_api_url }}";
 
     document.getElementById('get-recommendations-btn').addEventListener('click', async () => {
         const payload = {
@@ -83,27 +69,69 @@
 
             const recipes = await response.json();
 
-            const container = document.getElementById('recommendation-results');
-            if (recipes.length === 0) {
-                container.innerHTML = "<p>No recipes found for your pantry.</p>";
-            } else {
-                container.innerHTML = recipes.map(r => `
-                    <div class="recipe-card">
-                        <h4>${r.name}</h4>
-                        <img src="${r.image}" alt="${r.name}" width="120">
-                        <p><strong>Matched ingredients:</strong> ${r.matched_ingredients}</p>
-                        <p><strong>Missing ingredients:</strong> ${r.missing_ingredients.length > 0
-                            ? r.missing_ingredients.join(', ')
-                            : 'None'}</p>
-                        ${r.dietary_tags.length > 0
-                            ? `<p><strong>Dietary Tags:</strong> ${r.dietary_tags.join(', ')}</p>`
-                            : ''}
-                    </div>
-                `).join('');
-            }
-        } catch (err) {
-            console.error("Error fetching recipes:", err);
-        }
-    });
-</script>
+                // Render results
+                const container = document.querySelector('.recipe-grid');
+                if (recipes.length === 0) {
+                    container.innerHTML = "<p>No recipes found for your pantry.</p>";
+                } else {
+                    container.innerHTML = recipes.map(r => `
+                        <a href="/recipe/${r.name}" class="recipe-card-link">
+                            <div class="recipe-card">
+                                <img src="${r.image}" alt="${r.name}">
+
+                                <div class="recipe-info">
+                                    <div class="recipe-card-title">
+                                        <h3>${r.name}</h3>
+                                        <div class="recipe-actions">                                        
+                                            {% if completed %}
+                                                <button id="bookMarkBtn">✓</button>
+                                            {% else %}
+                                                <div class="recipe-bookmark" data-slug="{{slug}}">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" viewBox="-1 0 18 18">
+                                                        <path fill="rgb(223, 188, 30)"
+                                                            d="M2 2v13.5a.5.5 0 0 0 .74.439L8 13.069l5.26 2.87A.5.5 0 0 0 14 15.5V2a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2"
+                                                        />
+                                                    </svg>
+                                                </div>
+                                            {% endif %}
+                                            
+                                        </div>
+                                    </div>
+
+                                    <div style="display: flex; justify-content: space-between">
+                                        <div>
+                                            <p>Matched Ingredients: ${r.matched_ingredients}</p>
+                                            <p>Missing Ingredients: ${r.missing_ingredients.length > 0
+                                                ? r.missing_ingredients.join(', ')
+                                                : 'None'}</p>
+                                            <p>Dietary Tags: ${r.dietary_tags.join(', ')}</p>
+                                        </div>
+                                        <div>
+                                            
+                                        </div>
+                                    </div>
+                                    
+                                    <p>${r.summary || 'No description available'}</p>
+                                </div>
+                            </div>
+                        </a>`).join('')
+                        
+                        // <div class="recipe-card">
+                        //     <h4>${r.name}</h4>
+                        //     <img src="${r.image}" alt="${r.name}" width="120">
+                        //     <p><strong>Matched ingredients:</strong> ${r.matched_ingredients}</p>
+                        //     <p><strong>Missing ingredients:</strong> ${r.missing_ingredients.length > 0
+                        //         ? r.missing_ingredients.join(', ')
+                        //         : 'None'}</p>
+                        //     ${r.dietary_tags.length > 0
+                        //         ? `<p><strong>Dietary Tags:</strong> ${r.dietary_tags.join(', ')}</p>`
+                        //         : ''}
+                        // </div>
+                        // `).join('');
+                    }
+                } catch (err) {
+                    console.error("Error fetching recipes:", err);
+                }
+            });
+        </script>
 {% endblock %}

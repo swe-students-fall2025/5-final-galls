@@ -95,11 +95,13 @@ nav a {
     color: var(--secondary-color);
     border: 2px solid var(--tertiary-color);
     box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    font-family: inherit;
 }
 
 .btn-secondary {
     background-color: #eee;
     color: #333;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
 }
 
 .btn-small {
@@ -110,6 +112,8 @@ nav a {
 .btn-danger {
     background-color: #c0392b;
     color: #fff;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    font-family: inherit;
 }
 
 .empty-state {
@@ -140,6 +144,51 @@ nav a {
     text-align: center;
     color: white;
 }
+.pantry-preview-table {
+    width: 95%;
+    margin: 0 auto 2rem;
+    border-collapse: collapse;
+}
+
+.pantry-preview-table th {
+    color: var(--secondary-color);
+}
+
+.pantry-preview-table th,
+.pantry-preview-table td {
+    padding: 0.75rem 0.5rem;
+    border-bottom: 1px solid #ddd;
+    text-align: left;
+}
+
+
+@media (max-width: 1300px) { 
+    .pantry-preview-table,
+    .pantry-preview-table thead,
+    .pantry-preview-table tbody,
+    .pantry-preview-table th, 
+    .pantry-preview-table td,
+    .pantry-preview-table tr { 
+        display: block;
+    }
+
+    .pantry-preview-table thead { 
+        display: none;
+    }
+
+    .pantry-preview-table tr { 
+        margin-bottom: 1rem; 
+        background: var(--tertiary-color);
+        padding: 1rem;
+        border-radius: 8px;
+    }
+
+    .pantry-preview-table td { 
+        position: relative;
+        /* border: none; */
+    }
+}
+
 
 .header-link {
     font-size: 0.9rem;
@@ -230,21 +279,29 @@ nav a {
     background-color: #f0f0f0;
     color: #333;
 }
-.pantry-preview-table {
-    width: 95%;
-    margin: 0 auto 2rem;
-    border-collapse: collapse;
+
+/* -----RECIPE CARDS------ */
+.recipe {
+    padding: 1rem 2rem 0rem 2rem;
+    max-width: 1800px;
+    margin: 0 auto;
+}
+  
+.recipe-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 1.5rem;
 }
 
-.pantry-preview-table th {
-    color: var(--secondary-color);
-}
-
-.pantry-preview-table th,
-.pantry-preview-table td {
-    padding: 0.75rem 0.5rem;
-    border-bottom: 1px solid #ddd;
-    text-align: left;
+.recipe-card {
+    background: var(--secondary-color);
+    border-radius: 12px;
+    /* border: 3px solid var(--primary-color); */
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    overflow: visible;
+    transition: transform 0.2s, box-shadow 0.2s;
+    padding-bottom: 1rem;
+    height: 415px;
 }
 
 /*----register and login styling----*/
@@ -255,8 +312,9 @@ nav a {
     padding: 2rem;
     background: #ffffff;
     border-radius: 10px;
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.06);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
     font-family: 'Poppins', sans-serif;
+    border: 3px solid var(--primary-color);
 }
 
 .auth-page h1,
@@ -304,6 +362,7 @@ nav a {
     background-color: var(--primary-color);
     color: var(--secondary-color);
     border: 2px solid var(--tertiary-color);
+    font-family: inherit;
 }
 
 .auth-page button:hover {
@@ -335,30 +394,109 @@ nav a {
     font-weight: 500;
 }
 
+.recipe-card-link { 
+    text-decoration: none;
+    color: inherit;
+}
 
-@media (max-width: 1300px) { 
-    .pantry-preview-table,
-    .pantry-preview-table thead,
-    .pantry-preview-table tbody,
-    .pantry-preview-table th, 
-    .pantry-preview-table td,
-    .pantry-preview-table tr { 
-        display: block;
-    }
+.recipe-card-link .recipe-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 18px rgba(0,0,0,0.15);
+}
 
-    .pantry-preview-table thead { 
-        display: none;
-    }
+.recipe-card img {
+    width: 100%;
+    height: 180px;
+    border-top-left-radius: 6px;
+    border-top-right-radius: 6px;
+    object-fit: cover;
+}
 
-    .pantry-preview-table tr { 
-        margin-bottom: 1rem; 
-        background: var(--tertiary-color);
-        padding: 1rem;
-        border-radius: 8px;
-    }
+.recipe-info {
+    padding: 1rem;
+}
 
-    .pantry-preview-table td { 
-        position: relative;
-        /* border: none; */
-    }
+.recipe-info h3 {
+    margin: 0 0 0.5rem 0;
+    font-size: 1.1rem;
+    width: 85%;
+}
+
+.recipe-info p {
+    margin: 0.3rem 0;
+    font-size: 0.95rem;
+    color: var(--primary-color);
+}
+
+.recipe-actions {
+    display: flex;
+    gap: 0.5rem;
+    justify-content: center;
+    align-items: center;
+}
+
+.recipe-actions .feed-form {
+    display: inline-flex;
+    margin: 0;
+    padding: 0;
+    align-items: center;
+}
+
+.recipe-actions button {
+    border: none;
+    padding: 0.2rem 0.4rem;
+    border-radius: 15px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: background 0.2s;
+    background-color: rgb(223, 188, 30);
+    color: white;
+}
+
+.recipe-bookmark { 
+    display: flex; 
+    justify-content: space-between; 
+    align-items: center;
+    background-color: var(--secondary-color);
+    fill: var(--primary-color);
+    width: 1.8em; 
+    height: 1.8em; 
+    border-radius: 50%; 
+}
+
+.recipe-bookmark path:hover,
+.recipe-bookmark path:active { 
+    fill: rgb(223, 188, 30);
+}
+
+.recipe-actions button:hover,
+.recipe-actions button:active {
+    background-color: rgb(223, 188, 30); 
+}
+
+.recipe-card-title { 
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 48px;
+}
+
+.recommendation-results { 
+    display: grid;
+    justify-content: center;
+    margin: 0 0 1rem 1.7rem;
+    max-width: 100%;
+    width: 20%;
+}
+
+.btn-success { 
+    margin: 0 auto;
+    width: 80%;
+    background-color: #eee;
+    color: #333;
+    box-shadow: 0 0 0 2px rgba(74, 144, 226, 0.05);
+    font-family: inherit;
+    white-space: normal; 
+    word-wrap: break-word; 
+    text-align: center;
 }

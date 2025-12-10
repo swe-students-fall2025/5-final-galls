@@ -1,4 +1,4 @@
-![Web-App CI/CD][(https://github.com/swe-students-fall2025/5-final-galls/actions/workflows/web-app.yml/badge.svg)](https://github.com/swe-students-fall2025/5-final-galls/actions/workflows/web-app.yml)
+[![Web-App CI/CD](https://github.com/swe-students-fall2025/5-final-galls/actions/workflows/web-app.yml/badge.svg)](https://github.com/swe-students-fall2025/5-final-galls/actions/workflows/web-app.yml)
 
 An exercise to put to practice software development teamwork, subsystem communication, containers, deployment, and CI/CD pipelines. See [instructions](./instructions.md) for details.
 
@@ -13,7 +13,7 @@ Pantry Pal is an intelligent recipie reccomendation system that helps you discov
 - Luna Suzuki [github](https://github.com/lunasuzuki)
 - Aden Juda [github](https://github.com/yungsemitone)
 - Lucy Hartigan [github](https://github.com/lucyhartigan)
-- Sydney Nadeau [github]()
+- Sydney Nadeau [github](https://github.com/sen5217)
 
 ## Features
 ### Smart Pantry Management
