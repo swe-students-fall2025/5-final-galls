@@ -6,18 +6,16 @@
 </head>
 <body>
     <nav>
-        <div>
-            <h1>PantryPal</h1>
+        <div style="display: flex; align-items: center;">
+            <h1 style="padding-right: 0">PantryPal</h1>
+            <img src="{{ url_for('static', filename='logo.png') }}" alt="logo" id="logo">
         </div>
         <div>
             <a href="/">Home</a> 
             <a href="/my-pantry">My Pantry</a> 
             <a href="/my-recipes">My Recipes</a> 
-            <!-- <a href="/add-recipe">Add Recipe</a>  -->
             <a href="/logout">Logout</a> 
-
-        </div>
-        
+        </div> 
     </nav>
 
     {% block content %}

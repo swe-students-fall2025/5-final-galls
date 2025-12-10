@@ -35,6 +35,42 @@ class RecommendationRequest(BaseModel):
     intolerances: Optional[List[str]] = None
     excluded_ingredients: Optional[List[str]] = None
 
+import requests
+import os
+
+API_KEY = os.getenv("SPOONACULAR_API_KEY","1630fb1bb80c4451896924049cf16ebf")
+BASE_URL = "https://api.spoonacular.com"
+
+def get_recipe_instructions(recipe_id: int):
+    """Fetch step-by-step instructions for a recipe from Spoonacular"""
+    url = f"{BASE_URL}/recipes/{recipe_id}/analyzedInstructions"
+    params = {"apiKey": API_KEY, "stepBreakdown": True}
+
+    try:
+        resp = requests.get(url, params=params)
+        resp.raise_for_status()
+        data = resp.json()
+        
+        formatted = []
+        for section in data:
+            formatted_section = {
+                "name": section.get("name", "Main Recipe"),
+                "steps": []
+            }
+            for step in section.get("steps", []):
+                formatted_section["steps"].append({
+                    "number": step.get("number"),
+                    "instruction": step.get("step"),
+                    "ingredients": [i["name"] for i in step.get("ingredients", [])],
+                    "equipment": [e["name"] for e in step.get("equipment", [])],
+                    "time": step.get("length")
+                })
+            formatted.append(formatted_section)
+        return formatted
+    except Exception as e:
+        print(f"Error fetching instructions for recipe {recipe_id}: {e}")
+        return []
+
 @app.post("/recommendations")
 def recommend(request: RecommendationRequest):
     # Preprocess ingredients
@@ -61,14 +97,19 @@ def recommend(request: RecommendationRequest):
         used = [i["name"] for i in r.get("usedIngredients") or []]
         missed = [i["name"] for i in r.get("missedIngredients") or []]
 
+        instructions = get_recipe_instructions(r.get("id"))
+
         simplified.append({
+            "id": r.get("id"),
             "name": r.get("title"),
-            "matched_ingredients": len(used),
+            "matched_ingredients": used,
             "missing_ingredients": missed,
             "image": r.get("image"),
-            "dietary_tags": r.get("diets", [])
+            "dietary_tags": r.get("diets", []),
+            "instructions": instructions
         })
     print(7)
     # Cache and return
     # TODO: caching
     return simplified
+

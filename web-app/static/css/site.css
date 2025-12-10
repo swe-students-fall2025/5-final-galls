@@ -63,6 +63,7 @@ nav a {
     width: 95%;
     margin: 0 auto 2rem;
     border-collapse: collapse;
+    border: 3px solig lightgray;
 }
 
 .pantry-table th,
@@ -513,6 +514,95 @@ nav a {
     text-align: center;
     margin-bottom: 1rem;
     font-weight: 500;
+}
+
+/*----RECIPE DETAIL PAGE----*/
+.recipe-page {
+    max-width: 800px;
+    margin: 2rem auto;
+    padding: 2rem;
+    background-color: #fff;
+    border-radius: 12px;
+    border: 2px solid var(--tertiary-color);
+    box-shadow: 0 6px 16px rgba(0,0,0,0.1);
+    color: var(--text-color);
+    font-family: 'Poppins', sans-serif;
+}
+
+.recipe-page h1 {
+    font-size: 2rem;
+    font-weight: 600;
+    text-align: center;
+    margin-bottom: 1rem;
+    color: var(--primary-color);
+}
+
+.recipe-page img {
+    display: block;
+    margin: 1rem auto;
+    border-radius: 10px;
+    max-width: 100%;
+    height: auto;
+}
+
+.recipe-page p {
+    font-size: 1rem;
+    line-height: 1.6;
+    margin: 0.75rem 0;
+}
+
+.recipe-page p strong {
+    color: var(--tertiary-color);
+}
+
+.recipe-page a {
+    display: inline-block;
+    margin-top: 1.5rem;
+    color: var(--primary-color);
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.recipe-page a:hover {
+    text-decoration: underline;
+}
+
+.recipe-page h2 {
+    font-size: 1.5rem;
+    margin-top: 2rem;
+    margin-bottom: 1rem;
+    border-bottom: 2px solid var(--tertiary-color);
+    padding-bottom: 5px;
+}
+
+.recipe-page h3 {
+    font-size: 1.2rem;
+    margin-top: 1.5rem;
+    margin-bottom: 0.5rem;
+    color: var(--primary-color);
+}
+
+.recipe-page ol {
+    padding-left: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.recipe-page li {
+    margin-bottom: 0.75rem;
+    line-height: 1.6;
+}
+
+.recipe-page li em {
+    display: block;
+    font-style: normal;
+    font-size: 0.85rem;
+    color: #555;
+    margin-top: 2px;
+}
+
+#logo {
+    height: 4em; 
+    width: auto; 
 }
 
 

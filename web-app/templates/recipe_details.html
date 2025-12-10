@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="recipe-page">
+    <h1>{{ recipe.name }}</h1>
+    <img src="{{ recipe.image }}" alt="{{ recipe.name }}">
+    
+    <p><strong>Matched ingredients:</strong> {{ recipe.matched_ingredients | join(', ') }}</p>
+    <p><strong>Missing ingredients:</strong>
+        {% if recipe.missing_ingredients %}{{ recipe.missing_ingredients | join(', ') }}{% else %}None{% endif %}
+    </p>
+    {% if recipe.dietary_tags %}
+        <p><strong>Dietary Tags:</strong> {{ recipe.dietary_tags | join(', ') }}</p>
+    {% endif %}
+
+    <h2>Instructions</h2>
+    {% if recipe.instructions %}
+        {% for section in recipe.instructions %}
+            <h3>{{ section.name }}</h3>
+            <ol>
+                {% for step in section.steps %}
+                    <li>
+                        {{ step.instruction }}
+                        
+                        {% if step.equipment %}
+                            <br><em>Equipment: {{ step.equipment | join(', ') }}</em>
+                        {% endif %}
+                        {% if step.time %}
+                            <br><em>Time: {{ step.time.number }} {{ step.time.unit }}</em>
+                        {% endif %}
+                    </li>
+                {% endfor %}
+            </ol>
+        {% endfor %}
+    {% else %}
+        <p>No instructions available.</p>
+    {% endif %}
+
+    <a href="{{ url_for('home') }}">Back to recommendations</a>
+</div>
+{% endblock %}
