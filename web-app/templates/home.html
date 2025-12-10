@@ -49,7 +49,7 @@
             <div class="recipe-grid">
                 {% if recipes %}
                     {% for r in recipes %}
-                        <a href="/recipe/${r.name}" class="recipe-card-link">
+                        <a href="/recipes/{{ r.id }}" class="recipe-card-link">
                             <div class="recipe-card">
                                 <img src="{{ r.image }}" alt="{{ r.name }}">
                     
