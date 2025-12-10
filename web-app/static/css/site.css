@@ -45,14 +45,18 @@ nav a {
 
 .page-header {
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
     align-items: center;
+    position: relative;
     color: var(--text-color);
-    margin: 2rem 1rem 1rem;
+    margin: 2rem 0 1rem;
 }
 
 .pantry-header-actions a {
-    margin-left: 0.5rem;
+    position: absolute;
+    right: 0;            
+    top: 50%;
+    transform: translateY(-50%);
 }
 
 .pantry-table {
@@ -135,15 +139,6 @@ nav a {
 .pantry-preview-ingredients { 
     text-align: center;
     color: white;
-}
-
-.page-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    max-width: 700px;
-    margin: 2rem auto 1rem;
-    padding: 0 0.5rem;
 }
 
 .header-link {
