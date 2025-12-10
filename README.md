@@ -27,7 +27,7 @@ Pantry Pal is an intelligent recipe recommendation system that helps you discove
 
 This repository contains a complete multi-container system with three main components:
 
-### **🧠 Backend/ML Client **
+### **🧠 Backend/ML Client**
 - Calls the Spoonacular API to generate recipes + instructions based on ingredients received from the Web App
 - Returns top recipes based on ingredient compatability
 - Notes any dietary restrictions
@@ -48,6 +48,11 @@ This repository contains a complete multi-container system with three main compo
 - Aden Juda [github](https://github.com/yungsemitone)
 - Lucy Hartigan [github](https://github.com/lucyhartigan)
 - Sydney Nadeau [github](https://github.com/sen5217)
+
+## Docker Images
+[sen5217/web-app](https://hub.docker.com/r/sen5217/web-app)
+
+[sen5217/ml-recommender](https://hub.docker.com/r/sen5217/ml-recommender)
 
 ## 🚀 Getting Started
 

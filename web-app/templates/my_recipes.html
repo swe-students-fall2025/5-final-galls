@@ -1,5 +1,103 @@
 {% extends "base.html" %}
+
 {% block content %}
-<h1>My Recipes</h1>
-<p>Your saved recipes will appear here.</p>
+<div class="page-header">
+    <h1>{{ user.username }}'s Saved Recipes</h1>
+</div>
+
+<div class="page-section"> 
+    <div> 
+        <div class="pantry-preview">
+            <h3>My Pantry Preview</h3>
+            <div class="pantry-preview-ingredients">
+                {% if ingredients %}
+                <table class="pantry-preview-table">
+                    <thead>
+                        <tr>
+                            <th>Ingredient</th>
+                            <th>Quantity</th>
+                            <th>Notes</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for ingredient in ingredients %}
+                        <tr>
+                            <td>{{ ingredient.name }}</td>
+                            <td>{{ ingredient.quantity if ingredient.quantity else '-' }}</td>
+                            <td>{{ ingredient.notes if ingredient.notes else '-' }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                {% else %}
+                <p>You don't have any ingredients saved yet. Go to My Pantry to start adding!</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <div>
+        {% if recipes %}
+            <section class="recipe">
+                <div class="recipe-grid">
+                    {% if recipes %}
+                        {% for r in recipes %}
+                            <a href="/recipes/{{ r.id }}" class="recipe-card-link">
+                                <div class="recipe-card">
+                                    {% if r.image %}
+                                        <img src="{{ r.image }}" alt="{{ r.name }}">
+                                    {% else %}
+                                        <img src="{{ url_for('static', filename='logo.png') }}" alt="logo" id="logo-recipe-card">
+                                    {% endif %}
+
+                                    <div class="recipe-info">
+                                        <div class="recipe-card-title">
+                                            <h3>{{ r.name | truncate(35, True, '...') }}</h3>
+                                            <div class="recipe-actions">                                        
+                                                {% if completed %}
+                                                    <button id="bookMarkBtn">✓</button>
+                                                {% else %}
+                                                    <div class="recipe-bookmark" data-id="{{ r._id }}">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" viewBox="-1 0 18 18">
+                                                            <path fill="rgb(223, 188, 30)"
+                                                                d="M2 2v13.5a.5.5 0 0 0 .74.439L8 13.069l5.26 2.87A.5.5 0 0 0 14 15.5V2a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2"
+                                                            />
+                                                        </svg>
+                                                    </div>
+                                                {% endif %}
+                                                
+                                            </div>
+                                        </div>
+                        
+                                        <div style="display: flex; justify-content: space-between">
+                                            <div>
+                                                <p><span class="recipe-info-tag">Matched:</span> {{ r.matched_ingredients }}</p>
+                                                <p><span class="recipe-info-tag">Missing:</span> 
+                                                    {% if r.missing_ingredients %}
+                                                        {{ r.missing_ingredients | join(', ') | truncate(60, True, '...') }}
+                                                    {% else %}
+                                                        None
+                                                    {% endif %}
+                                                </p>
+                                                <p><span class="recipe-info-tag">Dietary Tags:</span> 
+                                                    {% if r.dietary_tags %}
+                                                        {{ r.dietary_tags | join(', ') | truncate(60, True, '...') }}
+                                                    {% else %}
+                                                        None
+                                                    {% endif %}
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </a>
+                        {% endfor %}
+                    {% endif %}
+                </div>
+            </section>
+        {% else %}
+            <p style="text-align: center">You don't have any recipes saved yet! Get recommended recipes to save them.</p>
+        {% endif %}
+        </div>
+</div>
 {% endblock %}
