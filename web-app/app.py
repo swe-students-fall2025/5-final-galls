@@ -77,7 +77,7 @@ def login():
 
         user = User(user_doc)
         login_user(user)
-        return redirect(url_for("index"))
+        return redirect(url_for("home"))
 
     return render_template("login.html")
 
@@ -109,7 +109,7 @@ def register():
         user = User(user_doc)
         login_user(user)
 
-        return redirect(url_for("index"))
+        return redirect(url_for("home"))
 
     return render_template("register.html")
 
