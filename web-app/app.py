@@ -245,7 +245,19 @@ def recipe_details(recipe_id):
     if not recipe:
         return redirect(url_for("home"))
 
+    if "instructions" not in recipe or not recipe["instructions"]:
+        try:
+            resp = requests.get(f"http://ml-recommender:8000/recommendations")
+            resp.raise_for_status()
+            ml_recipes = resp.json()
+            recipe_data = next((r for r in ml_recipes if r["id"] == int(recipe_id)), {})
+            recipe["instructions"] = recipe_data.get("instructions", [])
+        except Exception as e:
+            print(f"Error fetching instructions for recipe {recipe_id}: {e}")
+            recipe["instructions"] = []
+
     return render_template("recipe_details.html", recipe=recipe)
+
 
 
 if __name__ == "__main__":
