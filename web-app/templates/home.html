@@ -40,7 +40,7 @@
         {% if recipes %}
             {% for r in recipes %}
                 <div class="recipe-card">
-                    <h4>{{ r.name }}</h4>
+                    <a href="{{ url_for('recipe_details', recipe_id=r.id) }}"><h4>{{ r.name }}</h4></a>
                     <img src="{{ r.image }}" alt="{{ r.name }}" width="120">
                     <p><strong>Matched ingredients:</strong> {{ r.matched_ingredients }}</p>
                     <p><strong>Missing ingredients:</strong>

@@ -230,5 +230,21 @@ def recommend_recipes():
         recipes=recipes
     )
 
+@app.route("/recipes/<recipe_id>")
+@login_required
+def recipe_details(recipe_id):
+    # Look up the recipe by ID from your recommendations collection
+    rec_doc = recommendations.find_one({"user_id": ObjectId(current_user.id)})
+    if not rec_doc:
+        return redirect(url_for("home"))
+
+    # Find the specific recipe
+    recipe = next((r for r in rec_doc.get("recipes", []) if r.get("id") == recipe_id), None)
+    if not recipe:
+        return redirect(url_for("home"))
+
+    return render_template("recipe_details.html", recipe=recipe)
+
+
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5001)
