@@ -1,3 +1,6 @@
+import requests
+import os
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
@@ -5,10 +8,10 @@ from typing import List, Optional
 
 from service.external.spoonacular_api import get_recipes_by_ingredients
 from utils.preprocessing import normalize_ingredients
-from logic.filters import validate_restrictions, filter_recipes
 from logic.filters import validate_restrictions
+from logic.filters import filter_recipes
 from logic.scorer import rank_recipes
-from logic.ingredients import get_ingredients
+#from logic.ingredients import get_ingredients
 
 # TODO: import caching
 
@@ -28,6 +31,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+
 class RecommendationRequest(BaseModel):
     ingredients: List[str]
     top_n: int = 5
@@ -35,14 +39,14 @@ class RecommendationRequest(BaseModel):
     intolerances: Optional[List[str]] = None
     excluded_ingredients: Optional[List[str]] = None
 
-import requests
-import os
 
 API_KEY = os.getenv("SPOONACULAR_API_KEY","1630fb1bb80c4451896924049cf16ebf")
 BASE_URL = "https://api.spoonacular.com"
 
+
 def get_recipe_instructions(recipe_id: int):
-    """Fetch step-by-step instructions for a recipe from Spoonacular"""
+
+
     url = f"{BASE_URL}/recipes/{recipe_id}/analyzedInstructions"
     params = {"apiKey": API_KEY, "stepBreakdown": True}
 
@@ -70,6 +74,7 @@ def get_recipe_instructions(recipe_id: int):
     except Exception as e:
         print(f"Error fetching instructions for recipe {recipe_id}: {e}")
         return []
+    
 
 @app.post("/recommendations")
 def recommend(request: RecommendationRequest):
@@ -112,4 +117,3 @@ def recommend(request: RecommendationRequest):
     # Cache and return
     # TODO: caching
     return simplified
-
